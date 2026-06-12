@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <rect width="420" height="280" rx="24" fill="#f6f7f9"/>
+  <rect x="55" y="40" width="310" height="200" rx="18" fill="#fff" stroke="#d9dde4" stroke-width="4"/>
+  <path d="M132 92h156M132 130h156M132 168h86" stroke="#121212" stroke-width="12" stroke-linecap="round"/>
+  <path d="M257 175l27 27 53-64" fill="none" stroke="#c8102e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="74" y="68" fill="#555" font-family="Arial" font-size="20">Demo warranty photo</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title">
+  <title id="title">Staff photo placeholder</title>
+  <rect width="240" height="240" rx="32" fill="#f8fafc"/>
+  <circle cx="120" cy="88" r="44" fill="#d9dde4"/>
+  <path d="M56 220c11-49 39-74 64-74s53 25 64 74" fill="#121212"/>
+  <text x="120" y="212" text-anchor="middle" font-family="Arial" font-size="30" font-weight="700" fill="#fff">Staff</text>
+</svg>

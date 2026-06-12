@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int        @id @default(autoincrement())
+  name              String
+  email             String     @unique
+  password_hash     String
+  role              String
+  branch_id         Int?
+  phone             String?
+  position          String?
+  image_url         String?
+  status            String     @default("Active")
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @updatedAt
+
+  branch            Branch?    @relation(fields: [branch_id], references: [id])
+  assignedFeedbacks Feedback[] @relation("StaffFeedbacks")
+  caseNotes         CaseNote[]
+  qrCodes           QRCode[]
+}
+
+model Branch {
+  id         Int        @id @default(autoincrement())
+  name       String
+  address    String?
+  phone      String?
+  status     String     @default("Active")
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  staff      User[]
+  feedbacks  Feedback[]
+  qrCodes    QRCode[]
+}
+
+model Feedback {
+  id             Int             @id @default(autoincrement())
+  case_id        String          @unique
+  branch_id      Int
+  staff_id       Int
+  customer_name  String?
+  customer_phone String
+  feedback_type  String
+  rating         Int
+  comment        String
+  status         String          @default("New")
+  priority       String          @default("Normal")
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  resolved_at    DateTime?
+
+  branch         Branch          @relation(fields: [branch_id], references: [id])
+  staff          User            @relation("StaffFeedbacks", fields: [staff_id], references: [id])
+  images         FeedbackImage[]
+  notes          CaseNote[]
+}
+
+model FeedbackImage {
+  id          Int      @id @default(autoincrement())
+  feedback_id Int
+  image_url   String
+  created_at  DateTime @default(now())
+
+  feedback    Feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+}
+
+model CaseNote {
+  id          Int      @id @default(autoincrement())
+  feedback_id Int
+  user_id     Int
+  note        String
+  created_at  DateTime @default(now())
+
+  feedback    Feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id])
+}
+
+model QRCode {
+  id         Int      @id @default(autoincrement())
+  type       String
+  staff_id   Int?
+  branch_id  Int?
+  qr_url     String
+  created_at DateTime @default(now())
+
+  staff      User?    @relation(fields: [staff_id], references: [id])
+  branch     Branch?  @relation(fields: [branch_id], references: [id])
+}
