@@ -26,7 +26,7 @@ export function Shell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#f6f7f9]">
+    <div className="min-h-screen bg-[#f8f7f5]">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-line bg-white px-5 py-6 lg:block">
         <Brand />
         <nav className="mt-8 space-y-1">

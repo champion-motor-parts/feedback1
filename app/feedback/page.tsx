@@ -25,6 +25,7 @@ export default async function FeedbackPage({
       staff={staff}
       initialBranchId={Number(params.branchId || 0) || undefined}
       initialStaffId={Number(params.staffId || 0) || undefined}
+      initialLanguage={params.lang === "ms" ? "ms" : "en"}
     />
   );
 }

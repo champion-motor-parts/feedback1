@@ -18,6 +18,10 @@ This system shows raw data, counts, distributions, and exports only. It does not
 - Simple signed-cookie email/password login
 - Uploaded feedback photos are stored in the database as data URLs for MVP deployment simplicity
 
+## Runtime
+
+Use Node.js 22. Railway/Nixpacks will read this from `package.json` and `.node-version`.
+
 ## Local Setup
 
 Use PostgreSQL locally, or deploy directly to Railway with Railway PostgreSQL.

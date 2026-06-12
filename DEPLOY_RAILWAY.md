@@ -33,6 +33,7 @@ tsconfig.json
 postcss.config.js
 README.md
 DEPLOY_RAILWAY.md
+.node-version
 .env.example
 .gitignore
 ```
@@ -45,6 +46,14 @@ node_modules
 .env
 prisma/dev.db
 ```
+
+如果 Railway build log 出现：
+
+```text
+You are using Node.js 18.x. For Next.js, Node.js version >=20.9.0 is required.
+```
+
+代表 GitHub 还没有上传新的 `package.json` / `.node-version`。重新上传这两个文件后 Redeploy。
 
 ## 2. 创建 Railway 项目
 

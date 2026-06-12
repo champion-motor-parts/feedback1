@@ -10,18 +10,18 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#fff1f2",
-          100: "#ffe4e6",
-          500: "#e11d2f",
-          600: "#c8102e",
-          700: "#a20d25",
-          900: "#3f050d"
+          50: "#fff7ed",
+          100: "#ffedd5",
+          500: "#d9792d",
+          600: "#b95520",
+          700: "#8f351a",
+          900: "#3d1d14"
         },
-        ink: "#121212",
-        line: "#e6e8ec"
+        ink: "#201816",
+        line: "#e7ded7"
       },
       boxShadow: {
-        soft: "0 12px 30px rgba(18, 18, 18, 0.08)"
+        soft: "0 16px 36px rgba(32, 24, 22, 0.1)"
       }
     }
   },
