@@ -5,11 +5,11 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { buttonClass } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/field";
-import { CASE_STATUSES, FEEDBACK_TYPES } from "@/lib/constants";
+import { CASE_STATUSES, FEEDBACK_TARGET_LABELS, FEEDBACK_TARGET_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
 import { feedbackWhereFromSearch } from "@/lib/filters";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatDate, ratingStars } from "@/lib/utils";
+import { feedbackTargetName, formatDate, ratingStars } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -51,7 +51,7 @@ export default async function AdminFeedbackPage({
           <CardTitle>Filters</CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
+          <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-8">
             <Input name="from" type="date" defaultValue={params.from || ""} aria-label="From date" />
             <Input name="to" type="date" defaultValue={params.to || ""} aria-label="To date" />
             <Select name="branch" defaultValue={params.branch || ""} aria-label="Branch">
@@ -64,6 +64,12 @@ export default async function AdminFeedbackPage({
               <option value="">All Staff</option>
               {staff.map((person) => (
                 <option key={person.id} value={person.id}>{person.name}</option>
+              ))}
+            </Select>
+            <Select name="target" defaultValue={params.target || ""} aria-label="Feedback target">
+              <option value="">All Targets</option>
+              {FEEDBACK_TARGET_TYPES.map((target) => (
+                <option key={target} value={target}>{FEEDBACK_TARGET_LABELS[target]}</option>
               ))}
             </Select>
             <Select name="type" defaultValue={params.type || ""} aria-label="Feedback type">
@@ -112,7 +118,7 @@ export default async function AdminFeedbackPage({
                   <th className="py-3 pr-4">Customer Name</th>
                   <th className="py-3 pr-4">Phone Number</th>
                   <th className="py-3 pr-4">Branch</th>
-                  <th className="py-3 pr-4">Staff</th>
+                  <th className="py-3 pr-4">Target</th>
                   <th className="py-3 pr-4">Feedback Type</th>
                   <th className="py-3 pr-4">Rating</th>
                   <th className="py-3 pr-4">Status</th>
@@ -127,7 +133,7 @@ export default async function AdminFeedbackPage({
                     <td className="py-3 pr-4">{feedback.customer_name || "-"}</td>
                     <td className="py-3 pr-4">{feedback.customer_phone}</td>
                     <td className="py-3 pr-4">{feedback.branch.name}</td>
-                    <td className="py-3 pr-4">{feedback.staff.name}</td>
+                    <td className="py-3 pr-4">{feedbackTargetName(feedback)}</td>
                     <td className="py-3 pr-4">{feedback.feedback_type}</td>
                     <td className="py-3 pr-4">{ratingStars(feedback.rating)}</td>
                     <td className="py-3 pr-4"><StatusBadge status={feedback.status} /></td>

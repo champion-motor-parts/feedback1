@@ -9,7 +9,7 @@ import { Field, Select, Textarea } from "@/components/ui/field";
 import { CASE_STATUSES } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatDateTime, ratingStars } from "@/lib/utils";
+import { feedbackTargetName, formatDateTime, ratingStars } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -50,7 +50,7 @@ export default async function AdminFeedbackDetailPage({
               <Detail label="Customer Name" value={feedback.customer_name || "-"} />
               <Detail label="Phone Number" value={feedback.customer_phone} />
               <Detail label="Branch" value={feedback.branch.name} />
-              <Detail label="Staff Name" value={feedback.staff.name} />
+              <Detail label="Feedback Target" value={feedbackTargetName(feedback)} />
               <Detail label="Feedback Type" value={feedback.feedback_type} />
               <Detail label="Rating" value={ratingStars(feedback.rating)} />
               <Detail label="Created Date" value={formatDateTime(feedback.created_at)} />

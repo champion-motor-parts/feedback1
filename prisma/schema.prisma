@@ -45,7 +45,9 @@ model Feedback {
   id             Int             @id @default(autoincrement())
   case_id        String          @unique
   branch_id      Int
-  staff_id       Int
+  staff_id       Int?
+  target_type    String          @default("staff")
+  target_label   String?
   customer_name  String?
   customer_phone String
   feedback_type  String
@@ -58,7 +60,7 @@ model Feedback {
   resolved_at    DateTime?
 
   branch         Branch          @relation(fields: [branch_id], references: [id])
-  staff          User            @relation("StaffFeedbacks", fields: [staff_id], references: [id])
+  staff          User?           @relation("StaffFeedbacks", fields: [staff_id], references: [id])
   images         FeedbackImage[]
   notes          CaseNote[]
 }

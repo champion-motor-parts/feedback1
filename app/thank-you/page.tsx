@@ -28,7 +28,7 @@ export default async function ThankYouPage({
       another: "Hantar Maklum Balas Lain"
     }
   }[language];
-  const whatsappUrl = process.env.COMPANY_WHATSAPP_URL || "https://wa.me/60123456789";
+  const whatsappUrl = process.env.COMPANY_WHATSAPP_URL || "https://wa.me/601116177703";
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f7f5] px-4 py-8">

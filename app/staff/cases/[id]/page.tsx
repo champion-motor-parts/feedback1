@@ -46,7 +46,7 @@ export default async function StaffCaseDetailPage({
               <Detail label="Customer Name" value={feedback.customer_name || "-"} />
               <Detail label="Phone Number" value={feedback.customer_phone} />
               <Detail label="Branch" value={feedback.branch.name} />
-              <Detail label="Staff Name" value={feedback.staff.name} />
+              <Detail label="Staff Name" value={feedback.staff?.name || user.name} />
               <Detail label="Feedback Type" value={feedback.feedback_type} />
               <Detail label="Rating" value={ratingStars(feedback.rating)} />
               <Detail label="Created Date" value={formatDateTime(feedback.created_at)} />

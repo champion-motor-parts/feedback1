@@ -46,7 +46,7 @@ Open:
 DATABASE_URL="postgresql://postgres:password@localhost:5432/champion_feedback"
 AUTH_SECRET="change-this-to-a-long-random-secret"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-COMPANY_WHATSAPP_URL="https://wa.me/60123456789"
+COMPANY_WHATSAPP_URL="https://wa.me/601116177703"
 ```
 
 For Railway, set:
@@ -55,7 +55,7 @@ For Railway, set:
 DATABASE_URL="${{ Postgres.DATABASE_URL }}"
 AUTH_SECRET="your-long-random-secret"
 NEXT_PUBLIC_APP_URL="https://your-public-railway-domain"
-COMPANY_WHATSAPP_URL="https://wa.me/60123456789"
+COMPANY_WHATSAPP_URL="https://wa.me/601116177703"
 ```
 
 ## Railway Deployment

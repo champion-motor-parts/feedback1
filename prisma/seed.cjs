@@ -240,6 +240,8 @@ async function createDemoFeedbacks({ admin, branches, staff }) {
         case_id: `FB-${String(i).padStart(6, "0")}`,
         branch_id: branch.id,
         staff_id: person.id,
+        target_type: "staff",
+        target_label: person.name,
         customer_name: customerNames[i % customerNames.length],
         customer_phone: i % 3 === 0 ? `+6012${String(3000000 + i).padStart(7, "0")}` : `01${String(20000000 + i).padStart(8, "0")}`,
         feedback_type: type,

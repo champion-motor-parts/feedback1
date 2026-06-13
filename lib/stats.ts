@@ -2,7 +2,7 @@ import type { Feedback, User, Branch, FeedbackImage } from "@prisma/client";
 import { CASE_STATUSES, COMPLAINT_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
 
 type FeedbackWithJoins = Feedback & {
-  staff: User;
+  staff: User | null;
   branch: Branch;
   images: FeedbackImage[];
 };
@@ -23,7 +23,7 @@ type StaffWithBranch = User & { branch?: Branch | null };
 
 export function staffRawSummary(staff: StaffWithBranch[], feedbacks: FeedbackWithJoins[]) {
   return staff.map((person) => {
-    const own = feedbacks.filter((feedback) => feedback.staff_id === person.id);
+    const own = feedbacks.filter((feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id);
     const ratingCounts = [1, 2, 3, 4, 5].reduce<Record<number, number>>((acc, rating) => {
       acc[rating] = own.filter((feedback) => feedback.rating === rating).length;
       return acc;

@@ -35,6 +35,7 @@ function ChartFrame({ title, children }: { title: string; children: React.ReactN
 
 export function AnalyticsCharts({
   byType,
+  byTarget,
   byBranch,
   byStaff,
   averageByStaff,
@@ -44,6 +45,7 @@ export function AnalyticsCharts({
   dailyTrend
 }: {
   byType: Datum[];
+  byTarget: Datum[];
   byBranch: Datum[];
   byStaff: Datum[];
   averageByStaff: Datum[];
@@ -69,6 +71,10 @@ export function AnalyticsCharts({
 
       <ChartFrame title="Feedback by Branch">
         <SimpleBarChart data={byBranch} color="#121212" />
+      </ChartFrame>
+
+      <ChartFrame title="Feedback by Target">
+        <SimpleBarChart data={byTarget} color="#b95520" />
       </ChartFrame>
 
       <ChartFrame title="Feedback by Staff">

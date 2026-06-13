@@ -15,7 +15,7 @@ import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
 import { MetricCard } from "@/components/MetricCard";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CASE_STATUSES, COMPLAINT_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
+import { CASE_STATUSES, COMPLAINT_TYPES, FEEDBACK_TARGET_LABELS, FEEDBACK_TARGET_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { average } from "@/lib/stats";
@@ -58,25 +58,32 @@ export default async function AdminDashboardPage() {
     name: branch.name,
     value: feedbacks.filter((feedback) => feedback.branch_id === branch.id).length
   }));
+  const byTarget = FEEDBACK_TARGET_TYPES.map((target) => ({
+    name: FEEDBACK_TARGET_LABELS[target],
+    value: feedbacks.filter((feedback) => (feedback.target_type || "staff") === target).length
+  }));
   const byStaff = staff.map((person) => ({
     name: person.name,
-    value: feedbacks.filter((feedback) => feedback.staff_id === person.id).length
+    value: feedbacks.filter((feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id).length
   }));
   const averageByStaff = staff.map((person) => {
-    const own = feedbacks.filter((feedback) => feedback.staff_id === person.id);
+    const own = feedbacks.filter((feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id);
     return { name: person.name, value: average(own.map((feedback) => feedback.rating)) };
   });
   const complaintsByStaff = staff.map((person) => ({
     name: person.name,
     value: feedbacks.filter(
       (feedback) =>
+        feedback.target_type === "staff" &&
         feedback.staff_id === person.id &&
         COMPLAINT_TYPES.includes(feedback.feedback_type as (typeof COMPLAINT_TYPES)[number])
     ).length
   }));
   const complimentsByStaff = staff.map((person) => ({
     name: person.name,
-    value: feedbacks.filter((feedback) => feedback.staff_id === person.id && feedback.feedback_type === "Compliment").length
+    value: feedbacks.filter(
+      (feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id && feedback.feedback_type === "Compliment"
+    ).length
   }));
   const byStatus = CASE_STATUSES.map((status) => ({
     name: status,
@@ -123,6 +130,7 @@ export default async function AdminDashboardPage() {
       <div className="mt-6">
         <AnalyticsCharts
           byType={byType}
+          byTarget={byTarget}
           byBranch={byBranch}
           byStaff={byStaff}
           averageByStaff={averageByStaff}

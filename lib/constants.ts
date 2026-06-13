@@ -20,6 +20,14 @@ export const CASE_STATUSES = [
 
 export const STAFF_STATUS = ["Active", "Inactive"] as const;
 
+export const FEEDBACK_TARGET_TYPES = ["staff", "counter", "store"] as const;
+
+export const FEEDBACK_TARGET_LABELS: Record<(typeof FEEDBACK_TARGET_TYPES)[number], string> = {
+  staff: "Staff",
+  counter: "Counter",
+  store: "Overall Store"
+};
+
 export const COMPLAINT_TYPES = [
   "Product Issue",
   "Installation Issue",

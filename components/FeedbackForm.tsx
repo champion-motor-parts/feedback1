@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Branch, User } from "@prisma/client";
-import { Camera, Loader2, Send, Star } from "lucide-react";
+import { Building2, Camera, CreditCard, Loader2, Send, Star, UserRound } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { malaysiaPhoneIsValid } from "@/lib/utils";
 
 type StaffOption = User & { branch: Branch | null };
 type Language = "en" | "ms";
+type FeedbackTarget = "staff" | "counter" | "store";
 
 const copy = {
   en: {
@@ -20,6 +21,10 @@ const copy = {
     title: "Tell us what happened.",
     intro: "Your feedback helps us improve our service.",
     branch: "Branch / Outlet",
+    target: "Feedback For",
+    targetStaff: "Staff",
+    targetCounter: "Counter",
+    targetStore: "Overall Store",
     staff: "Staff / Service Person",
     assignedBranch: "Assigned branch",
     feedbackType: "Feedback Type",
@@ -46,6 +51,10 @@ const copy = {
     title: "Kongsi pengalaman anda.",
     intro: "Maklum balas anda membantu kami memperbaiki servis.",
     branch: "Cawangan / Outlet",
+    target: "Maklum Balas Untuk",
+    targetStaff: "Staf",
+    targetCounter: "Kaunter",
+    targetStore: "Keseluruhan Kedai",
     staff: "Staf / Orang Servis",
     assignedBranch: "Cawangan",
     feedbackType: "Jenis Maklum Balas",
@@ -109,16 +118,19 @@ export function FeedbackForm({
   staff,
   initialBranchId,
   initialStaffId,
-  initialLanguage = "en"
+  initialLanguage = "en",
+  initialTargetType = "staff"
 }: {
   branches: Branch[];
   staff: StaffOption[];
   initialBranchId?: number;
   initialStaffId?: number;
   initialLanguage?: Language;
+  initialTargetType?: FeedbackTarget;
 }) {
   const initialStaff = staff.find((person) => person.id === initialStaffId);
   const [language, setLanguage] = useState<Language>(initialLanguage);
+  const [targetType, setTargetType] = useState<FeedbackTarget>(initialTargetType);
   const [rating, setRating] = useState(5);
   const [branchId, setBranchId] = useState(initialBranchId || initialStaff?.branch_id || branches[0]?.id || 0);
   const [staffId, setStaffId] = useState(initialStaffId || staff[0]?.id || 0);
@@ -140,10 +152,10 @@ export function FeedbackForm({
   const ratingText = ratingLabels[language];
 
   useEffect(() => {
-    if (!filteredStaff.some((person) => person.id === staffId)) {
+    if (targetType === "staff" && !filteredStaff.some((person) => person.id === staffId)) {
       setStaffId(filteredStaff[0]?.id || 0);
     }
-  }, [filteredStaff, staffId]);
+  }, [filteredStaff, staffId, targetType]);
 
   async function submitFeedback(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -156,8 +168,15 @@ export function FeedbackForm({
     const form = event.currentTarget;
     const formData = new FormData(form);
     formData.set("rating", String(rating));
+    formData.set("targetType", targetType);
+    if (targetType !== "staff") {
+      formData.delete("staffId");
+      formData.delete("photos");
+    }
 
-    const photos = formData.getAll("photos").filter((item) => item instanceof File && item.size > 0);
+    const photos = targetType === "staff"
+      ? formData.getAll("photos").filter((item) => item instanceof File && item.size > 0)
+      : [];
     if (photos.length > 3) {
       setError(t.photoError);
       return;
@@ -229,49 +248,81 @@ export function FeedbackForm({
               </Select>
             </Field>
 
-            <Field label={t.staff}>
-              <input type="hidden" name="staffId" value={staffId} />
-              <div className="grid grid-cols-2 gap-3">
-                {filteredStaff.map((person) => {
-                  const isSelected = person.id === staffId;
+            <Field label={t.target}>
+              <input type="hidden" name="targetType" value={targetType} />
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: "staff" as const, label: t.targetStaff, icon: UserRound },
+                  { value: "counter" as const, label: t.targetCounter, icon: CreditCard },
+                  { value: "store" as const, label: t.targetStore, icon: Building2 }
+                ].map((option) => {
+                  const Icon = option.icon;
+                  const isSelected = targetType === option.value;
                   return (
                     <button
-                      key={person.id}
+                      key={option.value}
                       type="button"
                       aria-pressed={isSelected}
-                      title={`${person.name} - ${person.position || "Staff"}`}
-                      onClick={() => setStaffId(person.id)}
-                      className={`focus-ring min-h-52 rounded-lg border bg-white p-3 text-left transition ${
+                      onClick={() => setTargetType(option.value)}
+                      className={`focus-ring flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border px-2 text-center text-xs font-bold transition ${
                         isSelected
-                          ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
-                          : "border-line hover:border-neutral-300"
+                          ? "border-brand-600 bg-brand-50 text-brand-700 shadow-soft"
+                          : "border-line bg-white text-neutral-600 hover:border-neutral-300"
                       }`}
                     >
-                      {person.image_url ? (
-                        <img
-                          src={person.image_url}
-                          alt={person.name}
-                          className="mx-auto h-20 w-20 rounded-full border border-line bg-neutral-50 object-cover"
-                        />
-                      ) : (
-                        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
-                          {initials(person.name)}
-                        </span>
-                      )}
-                      <span className="mt-3 block min-h-12 break-words text-center text-xs font-bold leading-4 text-ink sm:text-sm">
-                        {person.name}
-                      </span>
-                      <span className="mt-1 block text-center text-xs text-neutral-500">
-                        {person.position || t.staffFallback}
-                      </span>
+                      <Icon className="h-5 w-5" />
+                      <span>{option.label}</span>
                     </button>
                   );
                 })}
               </div>
-              {selectedStaff?.branch ? (
-                <p className="text-xs text-neutral-500">{t.assignedBranch}: {selectedStaff.branch.name}</p>
-              ) : null}
             </Field>
+
+            {targetType === "staff" ? (
+              <Field label={t.staff}>
+                <input type="hidden" name="staffId" value={staffId} />
+                <div className="grid grid-cols-2 gap-3">
+                  {filteredStaff.map((person) => {
+                    const isSelected = person.id === staffId;
+                    return (
+                      <button
+                        key={person.id}
+                        type="button"
+                        aria-pressed={isSelected}
+                        title={`${person.name} - ${person.position || "Staff"}`}
+                        onClick={() => setStaffId(person.id)}
+                        className={`focus-ring min-h-52 rounded-lg border bg-white p-3 text-left transition ${
+                          isSelected
+                            ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
+                            : "border-line hover:border-neutral-300"
+                        }`}
+                      >
+                        {person.image_url ? (
+                          <img
+                            src={person.image_url}
+                            alt={person.name}
+                            className="mx-auto h-20 w-20 rounded-full border border-line bg-neutral-50 object-cover"
+                          />
+                        ) : (
+                          <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
+                            {initials(person.name)}
+                          </span>
+                        )}
+                        <span className="mt-3 block min-h-12 break-words text-center text-xs font-bold leading-4 text-ink sm:text-sm">
+                          {person.name}
+                        </span>
+                        <span className="mt-1 block text-center text-xs text-neutral-500">
+                          {person.position || t.staffFallback}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedStaff?.branch ? (
+                  <p className="text-xs text-neutral-500">{t.assignedBranch}: {selectedStaff.branch.name}</p>
+                ) : null}
+              </Field>
+            ) : null}
 
             <Field label={t.feedbackType}>
               <Select name="feedbackType" required>
@@ -313,13 +364,15 @@ export function FeedbackForm({
               />
             </Field>
 
-            <Field label={t.uploadPhoto} hint={t.uploadHint}>
-              <label className="focus-ring flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 text-center text-sm text-neutral-600">
-                <Camera className="mb-2 h-6 w-6 text-brand-700" />
-                {t.uploadCta}
-                <input name="photos" type="file" accept="image/png,image/jpeg,image/webp" multiple className="sr-only" />
-              </label>
-            </Field>
+            {targetType === "staff" ? (
+              <Field label={t.uploadPhoto} hint={t.uploadHint}>
+                <label className="focus-ring flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 text-center text-sm text-neutral-600">
+                  <Camera className="mb-2 h-6 w-6 text-brand-700" />
+                  {t.uploadCta}
+                  <input name="photos" type="file" accept="image/png,image/jpeg,image/webp" multiple className="sr-only" />
+                </label>
+              </Field>
+            ) : null}
 
             <Field label={t.customerName}>
               <Input name="customerName" placeholder={t.optional} />

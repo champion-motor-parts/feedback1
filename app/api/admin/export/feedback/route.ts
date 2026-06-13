@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { toCsv } from "@/lib/csv";
 import { feedbackWhereFromSearch } from "@/lib/filters";
 import { prisma } from "@/lib/prisma";
-import { formatDateTime } from "@/lib/utils";
+import { feedbackTargetName, feedbackTargetPosition, formatDateTime } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -29,7 +29,8 @@ export async function GET(request: Request) {
   const headers = [
     "Case ID",
     "Branch",
-    "Staff Name",
+    "Target Type",
+    "Target Name",
     "Staff Position",
     "Customer Name",
     "Customer Phone",
@@ -47,8 +48,9 @@ export async function GET(request: Request) {
   const rows = feedbacks.map((feedback) => [
     feedback.case_id,
     feedback.branch.name,
-    feedback.staff.name,
-    feedback.staff.position || "",
+    feedback.target_type || "staff",
+    feedbackTargetName(feedback),
+    feedbackTargetPosition(feedback),
     feedback.customer_name || "",
     feedback.customer_phone,
     feedback.feedback_type,

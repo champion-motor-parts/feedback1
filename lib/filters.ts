@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 export function feedbackWhereFromSearch(searchParams: Record<string, string | string[] | undefined>) {
   const branch = single(searchParams.branch);
   const staff = single(searchParams.staff);
+  const target = single(searchParams.target);
   const type = single(searchParams.type);
   const rating = single(searchParams.rating);
   const status = single(searchParams.status);
@@ -13,6 +14,7 @@ export function feedbackWhereFromSearch(searchParams: Record<string, string | st
   const where: Prisma.FeedbackWhereInput = {};
   if (branch) where.branch_id = Number(branch);
   if (staff) where.staff_id = Number(staff);
+  if (target) where.target_type = target;
   if (type) where.feedback_type = type;
   if (rating) where.rating = Number(rating);
   if (status) where.status = status;

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
+import { FEEDBACK_TARGET_LABELS } from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,6 +30,26 @@ export function feedbackLink(params: { staffId?: number; branchId?: number }) {
 
 export function ratingStars(rating: number) {
   return "★★★★★".slice(0, rating) + "☆☆☆☆☆".slice(0, Math.max(0, 5 - rating));
+}
+
+type FeedbackTargetRecord = {
+  target_type?: string | null;
+  target_label?: string | null;
+  staff?: {
+    name: string;
+    position?: string | null;
+  } | null;
+};
+
+export function feedbackTargetName(feedback: FeedbackTargetRecord) {
+  if (feedback.target_type === "counter") return feedback.target_label || FEEDBACK_TARGET_LABELS.counter;
+  if (feedback.target_type === "store") return feedback.target_label || FEEDBACK_TARGET_LABELS.store;
+  return feedback.staff?.name || feedback.target_label || FEEDBACK_TARGET_LABELS.staff;
+}
+
+export function feedbackTargetPosition(feedback: FeedbackTargetRecord) {
+  if (feedback.target_type === "staff") return feedback.staff?.position || "";
+  return "";
 }
 
 export function malaysiaPhoneIsValid(phone: string) {
