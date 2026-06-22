@@ -2,17 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Branch, User } from "@prisma/client";
-import { Building2, Camera, CreditCard, Loader2, Send, Star, UserRound } from "lucide-react";
+import { Camera, CreditCard, Loader2, Send, Star, Store, Wrench } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { FEEDBACK_TYPES, RATING_LABELS } from "@/lib/constants";
+import { COUNTER_SLOTS, FEEDBACK_SERVICE_AREAS, FEEDBACK_TYPES, RATING_LABELS } from "@/lib/constants";
 import { malaysiaPhoneIsValid } from "@/lib/utils";
 
 type StaffOption = User & { branch: Branch | null };
 type Language = "en" | "ms";
-type FeedbackTarget = "staff" | "counter" | "store";
+type ServiceArea = (typeof FEEDBACK_SERVICE_AREAS)[number];
 
 const copy = {
   en: {
@@ -21,11 +21,12 @@ const copy = {
     title: "Tell us what happened.",
     intro: "Your feedback helps us improve our service.",
     branch: "Branch / Outlet",
-    target: "Feedback For",
-    targetStaff: "Staff",
-    targetCounter: "Counter",
-    targetStore: "Overall Store",
+    area: "Complaint Area",
+    showroom: "Showroom",
+    repair: "Repair",
+    counter: "Counter",
     staff: "Staff / Service Person",
+    counterSlot: "Counter Slot",
     assignedBranch: "Assigned branch",
     feedbackType: "Feedback Type",
     rating: "Rating",
@@ -40,6 +41,7 @@ const copy = {
     phonePlaceholder: "01xxxxxxxx or +601xxxxxxxx",
     phoneError: "Please enter a valid Malaysia phone number, e.g. 01xxxxxxxx or +601xxxxxxxx.",
     photoError: "Please upload up to 3 photos only.",
+    noStaff: "No active staff found for this area.",
     submitError: "Unable to submit feedback. Please try again.",
     networkError: "Network error. Please try again.",
     submit: "Submit Feedback",
@@ -51,11 +53,12 @@ const copy = {
     title: "Kongsi pengalaman anda.",
     intro: "Maklum balas anda membantu kami memperbaiki servis.",
     branch: "Cawangan / Outlet",
-    target: "Maklum Balas Untuk",
-    targetStaff: "Staf",
-    targetCounter: "Kaunter",
-    targetStore: "Keseluruhan Kedai",
+    area: "Bahagian Aduan",
+    showroom: "Showroom",
+    repair: "Repair",
+    counter: "Kaunter",
     staff: "Staf / Orang Servis",
+    counterSlot: "Slot Kaunter",
     assignedBranch: "Cawangan",
     feedbackType: "Jenis Maklum Balas",
     rating: "Penilaian",
@@ -70,6 +73,7 @@ const copy = {
     phonePlaceholder: "01xxxxxxxx atau +601xxxxxxxx",
     phoneError: "Sila masukkan nombor telefon Malaysia yang sah, contoh 01xxxxxxxx atau +601xxxxxxxx.",
     photoError: "Sila muat naik maksimum 3 gambar sahaja.",
+    noStaff: "Tiada staf aktif untuk bahagian ini.",
     submitError: "Maklum balas tidak dapat dihantar. Sila cuba lagi.",
     networkError: "Masalah rangkaian. Sila cuba lagi.",
     submit: "Hantar Maklum Balas",
@@ -113,24 +117,32 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+function counterLabel(slot: string, language: Language) {
+  if (language === "ms") return slot.replace("Counter", "Kaunter");
+  return slot;
+}
+
 export function FeedbackForm({
   branches,
   staff,
   initialBranchId,
   initialStaffId,
   initialLanguage = "en",
-  initialTargetType = "staff"
+  initialServiceArea = "showroom"
 }: {
   branches: Branch[];
   staff: StaffOption[];
   initialBranchId?: number;
   initialStaffId?: number;
   initialLanguage?: Language;
-  initialTargetType?: FeedbackTarget;
+  initialServiceArea?: ServiceArea;
 }) {
   const initialStaff = staff.find((person) => person.id === initialStaffId);
   const [language, setLanguage] = useState<Language>(initialLanguage);
-  const [targetType, setTargetType] = useState<FeedbackTarget>(initialTargetType);
+  const [serviceArea, setServiceArea] = useState<ServiceArea>(
+    (initialStaff?.service_area as ServiceArea | null) || initialServiceArea
+  );
+  const [counterSlot, setCounterSlot] = useState<(typeof COUNTER_SLOTS)[number]>(COUNTER_SLOTS[0]);
   const [rating, setRating] = useState(5);
   const [branchId, setBranchId] = useState(initialBranchId || initialStaff?.branch_id || branches[0]?.id || 0);
   const [staffId, setStaffId] = useState(initialStaffId || staff[0]?.id || 0);
@@ -138,10 +150,11 @@ export function FeedbackForm({
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const filteredStaff = useMemo(() => {
-    const matchingStaff = staff.filter((person) => person.branch_id === branchId);
-    return matchingStaff.length ? matchingStaff : staff;
-  }, [branchId, staff]);
+  const isCounter = serviceArea === "counter";
+  const filteredStaff = useMemo(
+    () => staff.filter((person) => person.branch_id === branchId && person.service_area === serviceArea),
+    [branchId, serviceArea, staff]
+  );
 
   const selectedStaff = useMemo(
     () => staff.find((person) => person.id === staffId),
@@ -152,10 +165,10 @@ export function FeedbackForm({
   const ratingText = ratingLabels[language];
 
   useEffect(() => {
-    if (targetType === "staff" && !filteredStaff.some((person) => person.id === staffId)) {
+    if (!isCounter && !filteredStaff.some((person) => person.id === staffId)) {
       setStaffId(filteredStaff[0]?.id || 0);
     }
-  }, [filteredStaff, staffId, targetType]);
+  }, [filteredStaff, isCounter, staffId]);
 
   async function submitFeedback(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -168,13 +181,15 @@ export function FeedbackForm({
     const form = event.currentTarget;
     const formData = new FormData(form);
     formData.set("rating", String(rating));
-    formData.set("targetType", targetType);
-    if (targetType !== "staff") {
+    formData.set("serviceArea", serviceArea);
+
+    if (isCounter) {
       formData.delete("staffId");
       formData.delete("photos");
+      formData.set("targetLabel", counterSlot);
     }
 
-    const photos = targetType === "staff"
+    const photos = !isCounter
       ? formData.getAll("photos").filter((item) => item instanceof File && item.size > 0)
       : [];
     if (photos.length > 3) {
@@ -248,22 +263,22 @@ export function FeedbackForm({
               </Select>
             </Field>
 
-            <Field label={t.target}>
-              <input type="hidden" name="targetType" value={targetType} />
+            <Field label={t.area}>
+              <input type="hidden" name="serviceArea" value={serviceArea} />
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { value: "staff" as const, label: t.targetStaff, icon: UserRound },
-                  { value: "counter" as const, label: t.targetCounter, icon: CreditCard },
-                  { value: "store" as const, label: t.targetStore, icon: Building2 }
+                  { value: "showroom" as const, label: t.showroom, icon: Store },
+                  { value: "repair" as const, label: t.repair, icon: Wrench },
+                  { value: "counter" as const, label: t.counter, icon: CreditCard }
                 ].map((option) => {
                   const Icon = option.icon;
-                  const isSelected = targetType === option.value;
+                  const isSelected = serviceArea === option.value;
                   return (
                     <button
                       key={option.value}
                       type="button"
                       aria-pressed={isSelected}
-                      onClick={() => setTargetType(option.value)}
+                      onClick={() => setServiceArea(option.value)}
                       className={`focus-ring flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border px-2 text-center text-xs font-bold transition ${
                         isSelected
                           ? "border-brand-600 bg-brand-50 text-brand-700 shadow-soft"
@@ -278,51 +293,82 @@ export function FeedbackForm({
               </div>
             </Field>
 
-            {targetType === "staff" ? (
-              <Field label={t.staff}>
-                <input type="hidden" name="staffId" value={staffId} />
-                <div className="grid grid-cols-2 gap-3">
-                  {filteredStaff.map((person) => {
-                    const isSelected = person.id === staffId;
+            {isCounter ? (
+              <Field label={t.counterSlot}>
+                <input type="hidden" name="targetLabel" value={counterSlot} />
+                <div className="grid grid-cols-3 gap-2">
+                  {COUNTER_SLOTS.map((slot) => {
+                    const isSelected = counterSlot === slot;
                     return (
                       <button
-                        key={person.id}
+                        key={slot}
                         type="button"
                         aria-pressed={isSelected}
-                        title={`${person.name} - ${person.position || "Staff"}`}
-                        onClick={() => setStaffId(person.id)}
-                        className={`focus-ring min-h-52 rounded-lg border bg-white p-3 text-left transition ${
+                        onClick={() => setCounterSlot(slot)}
+                        className={`focus-ring min-h-16 rounded-md border px-2 text-center text-xs font-bold transition ${
                           isSelected
-                            ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
-                            : "border-line hover:border-neutral-300"
+                            ? "border-brand-600 bg-brand-50 text-brand-700 shadow-soft"
+                            : "border-line bg-white text-neutral-600 hover:border-neutral-300"
                         }`}
                       >
-                        {person.image_url ? (
-                          <img
-                            src={person.image_url}
-                            alt={person.name}
-                            className="mx-auto h-20 w-20 rounded-full border border-line bg-neutral-50 object-cover"
-                          />
-                        ) : (
-                          <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
-                            {initials(person.name)}
-                          </span>
-                        )}
-                        <span className="mt-3 block min-h-12 break-words text-center text-xs font-bold leading-4 text-ink sm:text-sm">
-                          {person.name}
-                        </span>
-                        <span className="mt-1 block text-center text-xs text-neutral-500">
-                          {person.position || t.staffFallback}
-                        </span>
+                        {counterLabel(slot, language)}
                       </button>
                     );
                   })}
                 </div>
-                {selectedStaff?.branch ? (
+              </Field>
+            ) : (
+              <Field label={t.staff}>
+                <input type="hidden" name="staffId" value={staffId} />
+                {filteredStaff.length ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    {filteredStaff.map((person) => {
+                      const isSelected = person.id === staffId;
+                      return (
+                        <button
+                          key={person.id}
+                          type="button"
+                          aria-pressed={isSelected}
+                          title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
+                          onClick={() => setStaffId(person.id)}
+                          className={`focus-ring min-h-56 rounded-lg border bg-white p-3 text-left transition ${
+                            isSelected
+                              ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
+                              : "border-line hover:border-neutral-300"
+                          }`}
+                        >
+                          {person.image_url ? (
+                            <img
+                              src={person.image_url}
+                              alt={person.name}
+                              className="mx-auto h-20 w-20 rounded-full border border-line bg-neutral-50 object-cover"
+                            />
+                          ) : (
+                            <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
+                              {initials(person.name)}
+                            </span>
+                          )}
+                          <span className="mt-3 block min-h-12 break-words text-center text-xs font-bold leading-4 text-ink sm:text-sm">
+                            {person.name}
+                          </span>
+                          <span className="mt-2 block text-center text-xs font-bold text-brand-700">
+                            {person.staff_code || "-"}
+                          </span>
+                          <span className="mt-1 block text-center text-xs text-neutral-500">
+                            {person.position || t.staffFallback}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="rounded-md bg-neutral-50 px-3 py-2 text-sm font-semibold text-neutral-500">{t.noStaff}</p>
+                )}
+                {selectedStaff?.branch && filteredStaff.length ? (
                   <p className="text-xs text-neutral-500">{t.assignedBranch}: {selectedStaff.branch.name}</p>
                 ) : null}
               </Field>
-            ) : null}
+            )}
 
             <Field label={t.feedbackType}>
               <Select name="feedbackType" required>
@@ -364,7 +410,7 @@ export function FeedbackForm({
               />
             </Field>
 
-            {targetType === "staff" ? (
+            {!isCounter ? (
               <Field label={t.uploadPhoto} hint={t.uploadHint}>
                 <label className="focus-ring flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 text-center text-sm text-neutral-600">
                   <Camera className="mb-2 h-6 w-6 text-brand-700" />

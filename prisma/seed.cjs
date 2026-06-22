@@ -60,31 +60,36 @@ const branchSeed = [
 ];
 
 const staffSeed = [
-  { branchKey: "hq", code: "A029", name: "MOHAMMAD ADHA DANISH BIN MOHD NATTA" },
-  { branchKey: "hq", name: "MOHAMMAD FADLI BIN MOHD RODZI" },
-  { branchKey: "hq", name: "MOHAMAD HASIM BIN RAZALI" },
-  { branchKey: "hq", name: "MOHAMAD RAKIN BIN A RAHMAN" },
-  { branchKey: "hq", name: "MOHD FIRDAUS BIN AMRAN" },
-  { branchKey: "hq", name: "MUHAMMAD AMIRUDDIN BIN AMRAN" },
-  { branchKey: "hq", name: "WAN MUHAMMAD AKIQ SYAMIN BIN WAN MOHD ANUAR" },
-  { branchKey: "hq", name: "MEGAT SHAHREEZ FAROUQHAIRULLAH BIN JAMIL" },
-  { branchKey: "hq", name: "NOOR SHAHRIZWAN BIN NOOR AIDI" },
-  { branchKey: "hq", name: "NAZRUL IDHAM BIN MOHD JASWARDY" },
-  { branchKey: "hq", name: "MOHD SHAIFUL HISHAM BIN RAMLI" },
-  { branchKey: "hq", name: "MUHAMMAD FARIDUDIN BIN ROSLAN" },
-  { branchKey: "hq", name: "MOHD RAIHAN BIN TAIB" },
-  { branchKey: "hq", name: "MUHAMMAD AIMAN BIN RAMLI" },
-  { branchKey: "hq", name: "MUHAMAD ARSYAD BIN AHMAD SUBARI" },
-  { branchKey: "hq", name: "MOHD KAMAL FAZMIE BIN HISYAM" },
-  { branchKey: "hq", name: "MUHAMMAD AMIN RIDZUAN BIN ZAKARIA" },
-  { branchKey: "masai", code: "A016", name: "NURUL NASUHA ROSLAN" },
-  { branchKey: "masai", code: "A025", name: "MUHAMMAD SHAHRUL RAHAIZAT BIN ROSLI" },
-  { branchKey: "masai", code: "MS01", name: "MUHAMMAD AIDIL HAIRIE BIN MOHD FAIZUL" },
-  { branchKey: "masai", code: "MS02", name: "MUHAMAD KHAIRULLAH BIN MAHASSAN" },
-  { branchKey: "masai", code: "MS03", name: "MUHAMAD RAFIE BIN CHAMIYAN" },
-  { branchKey: "masai", code: "MS04", name: "MUHAMMAD FAIZAL BIN ABU BAKAR" },
-  { branchKey: "masai", code: "MS05", name: "RIDZUAN SYAAH BIN ABDUR RAHMAN" },
-  { branchKey: "masai", code: "MS06", name: "ANGELIKA ELVY ANAK ENDON" }
+  { branchKey: "hq", area: "repair", code: "KH-R01", position: "Repair / Foreman", name: "MOHAMMAD FADLI BIN MOHD RODZI (PADID)" },
+  { branchKey: "hq", area: "repair", code: "KH-R02", position: "Repair / Foreman", name: "MOHD SHAIFUL HISHAM BIN RAMLI (ISAM)" },
+  { branchKey: "hq", area: "repair", code: "KH-R03", position: "Repair / Foreman", name: "MUHAMMAD FARIDUDIN BIN ROSLAN (ALONG)" },
+  { branchKey: "hq", area: "repair", code: "KH-R04", position: "Repair / Foreman", name: "MOHD RAIHAN BIN TAIB (WATA)" },
+  { branchKey: "hq", area: "repair", code: "KH-R05", position: "Repair / Foreman", name: "MUHAMMAD AIMAN BIN RAMLI (AMEN)" },
+  { branchKey: "hq", area: "repair", code: "KH-R06", position: "Repair / Foreman", name: "MUHAMAD ARSYAD BIN AHMAD SUBARI (ACAI)" },
+  { branchKey: "hq", area: "repair", code: "KH-R07", position: "Repair / Foreman", name: "MOHD KAMAL FAZMIE BIN HISYAM (AWEI)" },
+  { branchKey: "hq", area: "repair", code: "KH-R08", position: "Repair / Foreman", name: "MUHAMMAD AMIN RIDZUAN BIN ZAKARIA (GANU)" },
+  { branchKey: "hq", area: "repair", code: "KH-R09", position: "Repair / Foreman", name: "MOHAMAD HASIM BIN RAZALI (AMI)" },
+  { branchKey: "hq", area: "repair", code: "KH-R10", position: "Repair / Foreman", name: "MOHAMAD RAKIN BIN A RAHMAN (MUHMUD)" },
+  { branchKey: "hq", area: "repair", code: "KH-R11", position: "Repair / Foreman", name: "MOHD FIRDAUS BIN AMRAN (HAPPY)" },
+  { branchKey: "hq", area: "repair", code: "KH-R12", position: "Repair / Foreman", name: "MUHAMMAD AMIRUDDIN BIN AMRAN (AMIN)" },
+  { branchKey: "hq", area: "repair", code: "KH-R13", position: "Repair / Foreman", name: "WAN MUHAMMAD AKIQ SYAMIN BIN WAN MOHD ANUAR (AKAIT)" },
+  { branchKey: "hq", area: "repair", code: "KH-R14", position: "Repair / Foreman", name: "MEGAT SHAHREEZ FAROUQHAIRULLAH BIN JAMIL (MEGAT)" },
+  { branchKey: "hq", area: "repair", code: "KH-R15", position: "Repair / Foreman", name: "NOOR SHAHRIZWAN BIN NOOR AIDI (WAN)" },
+  { branchKey: "hq", area: "repair", code: "KH-R16", position: "Repair / Foreman", name: "NAZRUL IDHAM BIN MOHD JASWARDY (AU)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S01", position: "Showroom Sales", name: "NUR SHAHYRAH BINTI ABD RAHMAN (SHERA)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S02", position: "Showroom Sales", name: "NURUL DAYANA BINTI ZULZAIN (NANA)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S03", position: "Showroom Sales", name: "SAIDATUL NADIRA BINTI SALEH (SAI)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S04", position: "Showroom Sales", name: "MOHAMAD HAIRIE FARIZ BIN ABDUL MAJID (HAIRIE)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S05", position: "Showroom Sales", name: "MUHAMMAD ADHA DANISH BIN MOHD NATTA (ADHA)" },
+  { branchKey: "hq", area: "showroom", code: "KH-S06", position: "Showroom Sales", name: "PRINTS KINI RAIKKONEN (KIMI)" },
+  { branchKey: "masai", area: "showroom", code: "MS-S01", position: "Showroom Sales", name: "NURUL NASUHA ROSLAN" },
+  { branchKey: "masai", area: "showroom", code: "MS-S02", position: "Showroom Sales", name: "MUHAMMAD SHAHRUL RAHAIZAT BIN ROSLI" },
+  { branchKey: "masai", area: "showroom", code: "MS-S03", position: "Showroom Sales", name: "MUHAMMAD AIDIL HAIRIE BIN MOHD FAIZUL" },
+  { branchKey: "masai", area: "showroom", code: "MS-S04", position: "Showroom Sales", name: "ANGELIKA ELVY ANAK ENDON" },
+  { branchKey: "masai", area: "repair", code: "MS-R01", position: "Repair / Pomen", name: "MUHAMAD KHAIRULLAH BIN MAHASSAN" },
+  { branchKey: "masai", area: "repair", code: "MS-R02", position: "Repair / Pomen", name: "MUHAMMAD FAIZAL BIN ABU BAKAR" },
+  { branchKey: "masai", area: "repair", code: "MS-R03", position: "Repair / Pomen", name: "MUHAMAD RAFIE BIN CHAMIYAN" },
+  { branchKey: "masai", area: "repair", code: "MS-R04", position: "Repair / Pomen", name: "RIDZUAN SYAAH BIN ABDUR RAHMAN" }
 ];
 
 function daysAgo(days) {
@@ -95,7 +100,8 @@ function daysAgo(days) {
 }
 
 function staffEmail(seed, index) {
-  const prefix = seed.code ? seed.code.toLowerCase() : `${seed.branchKey}-${String(index + 1).padStart(2, "0")}`;
+  const rawPrefix = seed.code || `${seed.branchKey}-${String(index + 1).padStart(2, "0")}`;
+  const prefix = rawPrefix.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   return `${prefix}@championmotor.test`;
 }
 
@@ -180,7 +186,9 @@ async function ensureBaseData() {
       role: "staff",
       branch_id: branch.id,
       phone: null,
-      position: seed.code || branch.name,
+      position: seed.position,
+      staff_code: seed.code,
+      service_area: seed.area,
       image_url: null,
       status: "Active"
     };
@@ -242,6 +250,7 @@ async function createDemoFeedbacks({ admin, branches, staff }) {
         staff_id: person.id,
         target_type: "staff",
         target_label: person.name,
+        service_area: person.service_area || "showroom",
         customer_name: customerNames[i % customerNames.length],
         customer_phone: i % 3 === 0 ? `+6012${String(3000000 + i).padStart(7, "0")}` : `01${String(20000000 + i).padStart(8, "0")}`,
         feedback_type: type,
@@ -284,7 +293,8 @@ async function createDemoFeedbacks({ admin, branches, staff }) {
 
 async function main() {
   const resetDemoData = process.env.RESET_DEMO_DATA === "1";
-  const existingFeedbacks = await prisma.feedback.count();
+  const clearFeedbackData = process.env.CLEAR_FEEDBACK_DATA === "1";
+  const seedDemoData = process.env.SEED_DEMO_DATA === "1" || resetDemoData;
 
   if (resetDemoData) {
     console.log("RESET_DEMO_DATA=1 detected. Recreating demo data.");
@@ -294,14 +304,19 @@ async function main() {
     await prisma.qRCode.deleteMany();
     await prisma.user.deleteMany();
     await prisma.branch.deleteMany();
+  } else if (clearFeedbackData) {
+    console.log("CLEAR_FEEDBACK_DATA=1 detected. Clearing feedback, notes, and photos.");
+    await prisma.caseNote.deleteMany();
+    await prisma.feedbackImage.deleteMany();
+    await prisma.feedback.deleteMany();
   }
 
   const baseData = await ensureBaseData();
 
-  if (resetDemoData || existingFeedbacks === 0) {
+  if (seedDemoData) {
     await createDemoFeedbacks(baseData);
   } else {
-    console.log("Existing feedback records preserved. Branches and staff were synchronized.");
+    console.log("Demo feedback not seeded. Branches and staff were synchronized.");
   }
 
   console.log("Seed complete.");

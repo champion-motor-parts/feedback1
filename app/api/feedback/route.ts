@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { FEEDBACK_TARGET_LABELS, FEEDBACK_TARGET_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
+import { COUNTER_SLOTS, FEEDBACK_SERVICE_AREAS, FEEDBACK_TARGET_LABELS, FEEDBACK_TYPES } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { malaysiaPhoneIsValid } from "@/lib/utils";
 
@@ -12,18 +12,22 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const branchId = Number(formData.get("branchId"));
   const staffId = Number(formData.get("staffId"));
-  const targetType = String(formData.get("targetType") || "staff");
+  const serviceArea = String(formData.get("serviceArea") || "showroom");
+  const counterSlot = String(formData.get("targetLabel") || COUNTER_SLOTS[0]);
   const feedbackType = String(formData.get("feedbackType") || "");
   const rating = Number(formData.get("rating"));
   const comment = String(formData.get("comment") || "").trim();
   const customerName = String(formData.get("customerName") || "").trim();
   const customerPhone = String(formData.get("customerPhone") || "").trim();
 
-  if (!FEEDBACK_TARGET_TYPES.includes(targetType as (typeof FEEDBACK_TARGET_TYPES)[number])) {
-    return NextResponse.json({ error: "Invalid feedback target." }, { status: 400 });
+  if (!FEEDBACK_SERVICE_AREAS.includes(serviceArea as (typeof FEEDBACK_SERVICE_AREAS)[number])) {
+    return NextResponse.json({ error: "Invalid feedback area." }, { status: 400 });
   }
-  if (!branchId || !feedbackType || !rating || !comment || !customerPhone || (targetType === "staff" && !staffId)) {
+  if (!branchId || !feedbackType || !rating || !comment || !customerPhone || (serviceArea !== "counter" && !staffId)) {
     return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
+  }
+  if (serviceArea === "counter" && !COUNTER_SLOTS.includes(counterSlot as (typeof COUNTER_SLOTS)[number])) {
+    return NextResponse.json({ error: "Invalid counter selection." }, { status: 400 });
   }
   if (!FEEDBACK_TYPES.includes(feedbackType as (typeof FEEDBACK_TYPES)[number])) {
     return NextResponse.json({ error: "Invalid feedback type." }, { status: 400 });
@@ -40,16 +44,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Selected branch is not available." }, { status: 400 });
   }
 
+  const targetType = serviceArea === "counter" ? "counter" : "staff";
+
   const staff = targetType === "staff"
-    ? await prisma.user.findFirst({ where: { id: staffId, role: "staff", status: "Active", branch_id: branchId } })
+    ? await prisma.user.findFirst({
+        where: {
+          id: staffId,
+          role: "staff",
+          status: "Active",
+          branch_id: branchId,
+          service_area: serviceArea
+        }
+      })
     : null;
   if (targetType === "staff" && !staff) {
-    return NextResponse.json({ error: "Selected staff is not available for this branch." }, { status: 400 });
+    return NextResponse.json({ error: "Selected staff is not available for this branch and area." }, { status: 400 });
   }
 
   const targetLabel = targetType === "staff"
     ? staff?.name || FEEDBACK_TARGET_LABELS.staff
-    : FEEDBACK_TARGET_LABELS[targetType as keyof typeof FEEDBACK_TARGET_LABELS];
+    : counterSlot;
 
   const files = targetType === "staff"
     ? formData.getAll("photos").filter((item) => item instanceof File && item.size > 0) as File[]
@@ -82,6 +96,7 @@ export async function POST(request: Request) {
       staff_id: targetType === "staff" ? staffId : null,
       target_type: targetType,
       target_label: targetLabel,
+      service_area: serviceArea,
       customer_name: customerName || null,
       customer_phone: customerPhone,
       feedback_type: feedbackType,

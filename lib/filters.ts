@@ -4,6 +4,7 @@ export function feedbackWhereFromSearch(searchParams: Record<string, string | st
   const branch = single(searchParams.branch);
   const staff = single(searchParams.staff);
   const target = single(searchParams.target);
+  const area = single(searchParams.area);
   const type = single(searchParams.type);
   const rating = single(searchParams.rating);
   const status = single(searchParams.status);
@@ -15,6 +16,7 @@ export function feedbackWhereFromSearch(searchParams: Record<string, string | st
   if (branch) where.branch_id = Number(branch);
   if (staff) where.staff_id = Number(staff);
   if (target) where.target_type = target;
+  if (area) where.service_area = area;
   if (type) where.feedback_type = type;
   if (rating) where.rating = Number(rating);
   if (status) where.status = status;

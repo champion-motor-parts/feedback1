@@ -6,7 +6,7 @@ import { buttonClass } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/field";
 import { Badge } from "@/components/ui/badge";
-import { STAFF_STATUS } from "@/lib/constants";
+import { FEEDBACK_SERVICE_AREA_LABELS, FEEDBACK_SERVICE_AREAS, STAFF_STATUS } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { feedbackLink, formatDate } from "@/lib/utils";
@@ -42,7 +42,13 @@ export default async function StaffManagementPage() {
             <Input name="name" placeholder="Staff Name" required />
             <Input name="email" type="email" placeholder="Email" required />
             <Input name="phone" placeholder="Phone" />
+            <Input name="staffCode" placeholder="Staff Code" />
             <Input name="position" placeholder="Position" />
+            <Select name="serviceArea" defaultValue="showroom">
+              {FEEDBACK_SERVICE_AREAS.map((area) => (
+                <option key={area} value={area}>{FEEDBACK_SERVICE_AREA_LABELS[area]}</option>
+              ))}
+            </Select>
             <Input name="imageUrl" placeholder="Photo URL" />
             <Select name="branchId" required defaultValue={branches[0]?.id || ""}>
               {branches.map((branch) => (
@@ -80,7 +86,7 @@ export default async function StaffManagementPage() {
                         <Badge tone={person.status === "Active" ? "green" : "neutral"}>{person.status}</Badge>
                       </div>
                       <p className="mt-1 text-sm text-neutral-600">
-                        {person.position || "Staff"} - {person.branch?.name || "No branch"} - {person.email}
+                        {person.staff_code || "No code"} - {person.position || "Staff"} - {person.service_area ? FEEDBACK_SERVICE_AREA_LABELS[person.service_area as keyof typeof FEEDBACK_SERVICE_AREA_LABELS] : "No area"} - {person.branch?.name || "No branch"} - {person.email}
                       </p>
                       <p className="mt-1 text-xs text-neutral-500">Created {formatDate(person.created_at)}</p>
                     </div>
@@ -108,7 +114,13 @@ export default async function StaffManagementPage() {
                     <Input name="name" defaultValue={person.name} required />
                     <Input name="email" type="email" defaultValue={person.email} required />
                     <Input name="phone" defaultValue={person.phone || ""} />
+                    <Input name="staffCode" defaultValue={person.staff_code || ""} />
                     <Input name="position" defaultValue={person.position || ""} />
+                    <Select name="serviceArea" defaultValue={person.service_area || "showroom"}>
+                      {FEEDBACK_SERVICE_AREAS.map((area) => (
+                        <option key={area} value={area}>{FEEDBACK_SERVICE_AREA_LABELS[area]}</option>
+                      ))}
+                    </Select>
                     <Input name="imageUrl" defaultValue={person.image_url || ""} placeholder="Photo URL" />
                     <Select name="branchId" defaultValue={person.branch_id || branches[0]?.id || ""}>
                       {branches.map((branch) => (

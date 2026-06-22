@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
-import { FEEDBACK_TARGET_LABELS } from "@/lib/constants";
+import { FEEDBACK_SERVICE_AREA_LABELS, FEEDBACK_TARGET_LABELS } from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,6 +50,13 @@ export function feedbackTargetName(feedback: FeedbackTargetRecord) {
 export function feedbackTargetPosition(feedback: FeedbackTargetRecord) {
   if (feedback.target_type === "staff") return feedback.staff?.position || "";
   return "";
+}
+
+export function feedbackServiceAreaName(area: string | null | undefined) {
+  if (area === "showroom" || area === "repair" || area === "counter") {
+    return FEEDBACK_SERVICE_AREA_LABELS[area];
+  }
+  return "-";
 }
 
 export function malaysiaPhoneIsValid(phone: string) {

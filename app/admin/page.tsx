@@ -15,7 +15,15 @@ import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
 import { MetricCard } from "@/components/MetricCard";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CASE_STATUSES, COMPLAINT_TYPES, FEEDBACK_TARGET_LABELS, FEEDBACK_TARGET_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
+import {
+  CASE_STATUSES,
+  COMPLAINT_TYPES,
+  FEEDBACK_SERVICE_AREA_LABELS,
+  FEEDBACK_SERVICE_AREAS,
+  FEEDBACK_TARGET_LABELS,
+  FEEDBACK_TARGET_TYPES,
+  FEEDBACK_TYPES
+} from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { average } from "@/lib/stats";
@@ -57,6 +65,10 @@ export default async function AdminDashboardPage() {
   const byBranch = branches.map((branch) => ({
     name: branch.name,
     value: feedbacks.filter((feedback) => feedback.branch_id === branch.id).length
+  }));
+  const byArea = FEEDBACK_SERVICE_AREAS.map((area) => ({
+    name: FEEDBACK_SERVICE_AREA_LABELS[area],
+    value: feedbacks.filter((feedback) => feedback.service_area === area).length
   }));
   const byTarget = FEEDBACK_TARGET_TYPES.map((target) => ({
     name: FEEDBACK_TARGET_LABELS[target],
@@ -130,6 +142,7 @@ export default async function AdminDashboardPage() {
       <div className="mt-6">
         <AnalyticsCharts
           byType={byType}
+          byArea={byArea}
           byTarget={byTarget}
           byBranch={byBranch}
           byStaff={byStaff}

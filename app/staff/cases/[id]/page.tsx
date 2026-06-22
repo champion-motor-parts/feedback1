@@ -9,7 +9,7 @@ import { Field, Select, Textarea } from "@/components/ui/field";
 import { CASE_STATUSES } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatDateTime, ratingStars } from "@/lib/utils";
+import { feedbackServiceAreaName, formatDateTime, ratingStars } from "@/lib/utils";
 
 const staffLinks: ShellLink[] = [
   { href: "/staff", label: "My Cases", icon: ClipboardList }
@@ -46,6 +46,7 @@ export default async function StaffCaseDetailPage({
               <Detail label="Customer Name" value={feedback.customer_name || "-"} />
               <Detail label="Phone Number" value={feedback.customer_phone} />
               <Detail label="Branch" value={feedback.branch.name} />
+              <Detail label="Complaint Area" value={feedbackServiceAreaName(feedback.service_area)} />
               <Detail label="Staff Name" value={feedback.staff?.name || user.name} />
               <Detail label="Feedback Type" value={feedback.feedback_type} />
               <Detail label="Rating" value={ratingStars(feedback.rating)} />

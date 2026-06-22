@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { toCsv } from "@/lib/csv";
 import { prisma } from "@/lib/prisma";
 import { staffRawSummary } from "@/lib/stats";
+import { feedbackServiceAreaName } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -22,6 +23,8 @@ export async function GET() {
 
   const headers = [
     "Staff Name",
+    "Staff Code",
+    "Area",
     "Branch",
     "Total Feedback",
     "Average Rating",
@@ -46,6 +49,8 @@ export async function GET() {
 
   const rows = summary.map((row) => [
     row.staff.name,
+    row.staff.staff_code || "",
+    feedbackServiceAreaName(row.staff.service_area),
     row.branchName,
     row.totalFeedback,
     row.averageRating,

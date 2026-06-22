@@ -5,11 +5,18 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { buttonClass } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/field";
-import { CASE_STATUSES, FEEDBACK_TARGET_LABELS, FEEDBACK_TARGET_TYPES, FEEDBACK_TYPES } from "@/lib/constants";
+import {
+  CASE_STATUSES,
+  FEEDBACK_SERVICE_AREA_LABELS,
+  FEEDBACK_SERVICE_AREAS,
+  FEEDBACK_TARGET_LABELS,
+  FEEDBACK_TARGET_TYPES,
+  FEEDBACK_TYPES
+} from "@/lib/constants";
 import { feedbackWhereFromSearch } from "@/lib/filters";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { feedbackTargetName, formatDate, ratingStars } from "@/lib/utils";
+import { feedbackServiceAreaName, feedbackTargetName, formatDate, ratingStars } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -72,6 +79,12 @@ export default async function AdminFeedbackPage({
                 <option key={target} value={target}>{FEEDBACK_TARGET_LABELS[target]}</option>
               ))}
             </Select>
+            <Select name="area" defaultValue={params.area || ""} aria-label="Complaint area">
+              <option value="">All Areas</option>
+              {FEEDBACK_SERVICE_AREAS.map((area) => (
+                <option key={area} value={area}>{FEEDBACK_SERVICE_AREA_LABELS[area]}</option>
+              ))}
+            </Select>
             <Select name="type" defaultValue={params.type || ""} aria-label="Feedback type">
               <option value="">All Types</option>
               {FEEDBACK_TYPES.map((type) => (
@@ -111,13 +124,14 @@ export default async function AdminFeedbackPage({
         </CardHeader>
         <CardContent>
           <div className="table-scroll">
-            <table className="w-full min-w-[980px] text-left text-sm">
+            <table className="w-full min-w-[1120px] text-left text-sm">
               <thead className="border-b border-line text-xs uppercase tracking-wide text-neutral-500">
                 <tr>
                   <th className="py-3 pr-4">Case ID</th>
                   <th className="py-3 pr-4">Customer Name</th>
                   <th className="py-3 pr-4">Phone Number</th>
                   <th className="py-3 pr-4">Branch</th>
+                  <th className="py-3 pr-4">Area</th>
                   <th className="py-3 pr-4">Target</th>
                   <th className="py-3 pr-4">Feedback Type</th>
                   <th className="py-3 pr-4">Rating</th>
@@ -133,6 +147,7 @@ export default async function AdminFeedbackPage({
                     <td className="py-3 pr-4">{feedback.customer_name || "-"}</td>
                     <td className="py-3 pr-4">{feedback.customer_phone}</td>
                     <td className="py-3 pr-4">{feedback.branch.name}</td>
+                    <td className="py-3 pr-4">{feedbackServiceAreaName(feedback.service_area)}</td>
                     <td className="py-3 pr-4">{feedbackTargetName(feedback)}</td>
                     <td className="py-3 pr-4">{feedback.feedback_type}</td>
                     <td className="py-3 pr-4">{ratingStars(feedback.rating)}</td>

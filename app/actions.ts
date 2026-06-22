@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { CASE_STATUSES, STAFF_STATUS } from "@/lib/constants";
+import { CASE_STATUSES, FEEDBACK_SERVICE_AREAS, STAFF_STATUS } from "@/lib/constants";
 import { createSessionToken, requireUser, SESSION_COOKIE } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { feedbackLink } from "@/lib/utils";
@@ -102,6 +102,8 @@ export async function saveStaffAction(formData: FormData) {
   const email = text(formData, "email").toLowerCase();
   const phone = text(formData, "phone");
   const position = text(formData, "position");
+  const staffCode = text(formData, "staffCode");
+  const serviceArea = text(formData, "serviceArea") || "showroom";
   const imageUrl = text(formData, "imageUrl");
   const status = text(formData, "status") || "Active";
   const branchId = numberValue(formData, "branchId");
@@ -109,6 +111,7 @@ export async function saveStaffAction(formData: FormData) {
 
   if (!name || !email || !branchId) throw new Error("Staff name, email, and branch are required");
   if (!STAFF_STATUS.includes(status as (typeof STAFF_STATUS)[number])) throw new Error("Invalid staff status");
+  if (!FEEDBACK_SERVICE_AREAS.includes(serviceArea as (typeof FEEDBACK_SERVICE_AREAS)[number])) throw new Error("Invalid staff area");
 
   if (id) {
     const data: {
@@ -116,11 +119,23 @@ export async function saveStaffAction(formData: FormData) {
       email: string;
       phone: string;
       position: string;
+      staff_code: string;
+      service_area: string;
       image_url: string | null;
       status: string;
       branch_id: number;
       password_hash?: string;
-    } = { name, email, phone, position, image_url: imageUrl || null, status, branch_id: branchId };
+    } = {
+      name,
+      email,
+      phone,
+      position,
+      staff_code: staffCode,
+      service_area: serviceArea,
+      image_url: imageUrl || null,
+      status,
+      branch_id: branchId
+    };
     if (password) data.password_hash = await bcrypt.hash(password, 10);
     await prisma.user.update({ where: { id }, data });
   } else {
@@ -130,6 +145,8 @@ export async function saveStaffAction(formData: FormData) {
         email,
         phone,
         position,
+        staff_code: staffCode,
+        service_area: serviceArea,
         image_url: imageUrl || null,
         status,
         role: "staff",

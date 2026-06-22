@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { staffRawSummary } from "@/lib/stats";
+import { feedbackServiceAreaName } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -52,6 +53,8 @@ export default async function StaffDataPage() {
                 <tr>
                   {[
                     "Staff Name",
+                    "Staff Code",
+                    "Area",
                     "Branch",
                     "Total Feedback",
                     "Average Rating",
@@ -81,6 +84,8 @@ export default async function StaffDataPage() {
                 {rows.map((row) => (
                   <tr key={row.staff.id}>
                     <td className="py-3 pr-4 font-semibold">{row.staff.name}</td>
+                    <td className="py-3 pr-4">{row.staff.staff_code || "-"}</td>
+                    <td className="py-3 pr-4">{feedbackServiceAreaName(row.staff.service_area)}</td>
                     <td className="py-3 pr-4">{row.branchName}</td>
                     <td className="py-3 pr-4">{row.totalFeedback}</td>
                     <td className="py-3 pr-4">{row.averageRating}</td>

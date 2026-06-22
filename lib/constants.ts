@@ -28,6 +28,16 @@ export const FEEDBACK_TARGET_LABELS: Record<(typeof FEEDBACK_TARGET_TYPES)[numbe
   store: "Overall Store"
 };
 
+export const FEEDBACK_SERVICE_AREAS = ["showroom", "repair", "counter"] as const;
+
+export const FEEDBACK_SERVICE_AREA_LABELS: Record<(typeof FEEDBACK_SERVICE_AREAS)[number], string> = {
+  showroom: "Showroom",
+  repair: "Repair",
+  counter: "Counter"
+};
+
+export const COUNTER_SLOTS = ["Counter 1", "Counter 2", "Counter 3"] as const;
+
 export const COMPLAINT_TYPES = [
   "Product Issue",
   "Installation Issue",

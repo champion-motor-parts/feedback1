@@ -26,7 +26,11 @@ export default async function FeedbackPage({
       initialBranchId={Number(params.branchId || 0) || undefined}
       initialStaffId={Number(params.staffId || 0) || undefined}
       initialLanguage={params.lang === "ms" ? "ms" : "en"}
-      initialTargetType={params.target === "counter" || params.target === "store" ? params.target : "staff"}
+      initialServiceArea={
+        params.area === "repair" || params.area === "counter" || params.target === "counter"
+          ? (params.area === "repair" ? "repair" : "counter")
+          : "showroom"
+      }
     />
   );
 }
