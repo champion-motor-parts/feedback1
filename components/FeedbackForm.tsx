@@ -321,7 +321,7 @@ export function FeedbackForm({
               <Field label={t.staff}>
                 <input type="hidden" name="staffId" value={staffId} />
                 {filteredStaff.length ? (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid gap-3">
                     {filteredStaff.map((person) => {
                       const isSelected = person.id === staffId;
                       return (
@@ -331,7 +331,7 @@ export function FeedbackForm({
                           aria-pressed={isSelected}
                           title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
                           onClick={() => setStaffId(person.id)}
-                          className={`focus-ring min-h-56 rounded-lg border bg-white p-3 text-left transition ${
+                          className={`focus-ring flex min-h-32 items-center gap-4 rounded-lg border bg-white p-3 text-left transition ${
                             isSelected
                               ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                               : "border-line hover:border-neutral-300"
@@ -341,21 +341,23 @@ export function FeedbackForm({
                             <img
                               src={person.image_url}
                               alt={person.name}
-                              className="mx-auto h-20 w-20 rounded-full border border-line bg-neutral-50 object-cover"
+                              className="h-24 w-24 shrink-0 rounded-lg border border-line bg-neutral-50 object-cover"
                             />
                           ) : (
-                            <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
+                            <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 text-xl font-black text-brand-700">
                               {initials(person.name)}
                             </span>
                           )}
-                          <span className="mt-3 block min-h-12 break-words text-center text-xs font-bold leading-4 text-ink sm:text-sm">
-                            {person.name}
-                          </span>
-                          <span className="mt-2 block text-center text-xs font-bold text-brand-700">
-                            {person.staff_code || "-"}
-                          </span>
-                          <span className="mt-1 block text-center text-xs text-neutral-500">
-                            {person.position || t.staffFallback}
+                          <span className="min-w-0 flex-1">
+                            <span className="block break-words text-sm font-black leading-5 text-ink">
+                              {person.name}
+                            </span>
+                            <span className="mt-2 inline-flex rounded-md bg-brand-50 px-2 py-1 text-xs font-black text-brand-700">
+                              {person.staff_code || "-"}
+                            </span>
+                            <span className="mt-2 block text-xs font-semibold text-neutral-500">
+                              {person.position || t.staffFallback}
+                            </span>
                           </span>
                         </button>
                       );
