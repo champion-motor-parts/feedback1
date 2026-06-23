@@ -255,7 +255,7 @@ export function FeedbackForm({
           </div>
         </section>
 
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <form className="space-y-5" onSubmit={submitFeedback}>
             <Field label={t.branch}>
               <Select name="branchId" value={branchId} onChange={(event) => setBranchId(Number(event.target.value))}>
@@ -325,7 +325,7 @@ export function FeedbackForm({
               <Field label={t.staff}>
                 <input type="hidden" name="staffId" value={staffId} />
                 {filteredStaff.length ? (
-                  <div className="grid gap-4">
+                  <div className="grid gap-3">
                     {filteredStaff.map((person) => {
                       const isSelected = person.id === staffId;
                       return (
@@ -335,34 +335,34 @@ export function FeedbackForm({
                           aria-pressed={isSelected}
                           title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
                           onClick={() => setStaffId(person.id)}
-                          className={`focus-ring relative grid min-h-60 grid-cols-[45%_1fr] overflow-hidden rounded-lg border bg-white p-0 text-left transition ${
+                          className={`focus-ring relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
                             isSelected
                               ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                               : "border-line hover:border-neutral-300"
                           }`}
                         >
                           {person.image_url ? (
-                            <span className="flex h-full min-h-60 items-center justify-center overflow-hidden bg-neutral-50 p-2">
+                            <span className="h-[104px] w-[104px] overflow-hidden rounded-md bg-neutral-50 sm:aspect-square sm:h-auto sm:w-full">
                               <img
                                 src={person.image_url}
                                 alt={person.name}
-                                className="max-h-56 max-w-full rounded-md object-contain"
+                                className="h-full w-full object-cover"
                               />
                             </span>
                           ) : (
-                            <span className="flex h-full min-h-60 items-center justify-center bg-brand-50 text-4xl font-black text-brand-700">
+                            <span className="flex h-[104px] w-[104px] items-center justify-center rounded-md bg-brand-50 text-xl font-black text-brand-700 sm:aspect-square sm:h-auto sm:w-full sm:text-2xl">
                               {initials(person.name)}
                             </span>
                           )}
-                          <span className="pointer-events-none absolute inset-y-0 left-[45%] w-16 -translate-x-8 bg-gradient-to-r from-transparent via-brand-50/80 to-white" />
-                          <span className="relative z-10 flex min-w-0 flex-col justify-center px-4 py-5 pl-6">
-                            <span className="block break-words text-base font-black leading-6 text-ink">
+                          <span className="pointer-events-none absolute inset-y-0 left-[112px] w-12 -translate-x-5 bg-gradient-to-r from-transparent via-brand-50/80 to-white sm:left-[38%] sm:w-14 sm:-translate-x-6" />
+                          <span className="relative z-10 flex min-w-0 flex-col justify-center px-2 py-1.5 pl-4 sm:px-3 sm:py-2 sm:pl-5">
+                            <span className="block break-words text-[10px] font-black leading-[13px] text-ink sm:text-sm sm:leading-5">
                               {person.name}
                             </span>
-                            <span className="mt-2 inline-flex rounded-md bg-brand-50 px-2 py-1 text-xs font-black text-brand-700">
+                            <span className="mt-1.5 inline-flex w-fit rounded-md bg-brand-50 px-2 py-0.5 text-[10px] font-black text-brand-700 sm:mt-2 sm:py-1 sm:text-[11px]">
                               {person.staff_code || "-"}
                             </span>
-                            <span className="mt-2 block text-xs font-semibold text-neutral-500">
+                            <span className="mt-1 block text-[10px] font-semibold leading-3 text-neutral-500 sm:text-xs sm:leading-4">
                               {person.position || t.staffFallback}
                             </span>
                           </span>
