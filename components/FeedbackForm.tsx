@@ -335,26 +335,27 @@ export function FeedbackForm({
                           aria-pressed={isSelected}
                           title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
                           onClick={() => setStaffId(person.id)}
-                          className={`focus-ring flex flex-col overflow-hidden rounded-lg border bg-white p-3 text-center transition ${
+                          className={`focus-ring relative grid min-h-60 grid-cols-[45%_1fr] overflow-hidden rounded-lg border bg-white p-0 text-left transition ${
                             isSelected
                               ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                               : "border-line hover:border-neutral-300"
                           }`}
                         >
                           {person.image_url ? (
-                            <span className="flex h-56 w-full items-center justify-center overflow-hidden rounded-md border border-line bg-neutral-50 p-2 sm:h-64">
+                            <span className="flex h-full min-h-60 items-center justify-center overflow-hidden bg-neutral-50 p-2">
                               <img
                                 src={person.image_url}
                                 alt={person.name}
-                                className="max-h-full max-w-full object-contain"
+                                className="max-h-56 max-w-full rounded-md object-contain"
                               />
                             </span>
                           ) : (
-                            <span className="flex h-56 w-full items-center justify-center rounded-md border border-brand-100 bg-brand-50 text-4xl font-black text-brand-700 sm:h-64">
+                            <span className="flex h-full min-h-60 items-center justify-center bg-brand-50 text-4xl font-black text-brand-700">
                               {initials(person.name)}
                             </span>
                           )}
-                          <span className="mt-3 block w-full min-w-0">
+                          <span className="pointer-events-none absolute inset-y-0 left-[45%] w-16 -translate-x-8 bg-gradient-to-r from-transparent via-brand-50/80 to-white" />
+                          <span className="relative z-10 flex min-w-0 flex-col justify-center px-4 py-5 pl-6">
                             <span className="block break-words text-base font-black leading-6 text-ink">
                               {person.name}
                             </span>
