@@ -1,15 +1,19 @@
 import Image from "next/image";
 
 export function Brand({ compact = false }: { compact?: boolean }) {
+  const imageClass = compact
+    ? "h-auto w-[260px] max-w-full object-contain sm:w-[300px]"
+    : "h-auto max-w-[190px] object-contain md:max-w-[220px]";
+
   return (
     <div className="flex min-w-0 items-center gap-3">
       <Image
         src="/champion-logo.jpeg"
         alt="Champion Motor Parts Sdn Bhd"
-        width={compact ? 190 : 220}
-        height={compact ? 28 : 38}
+        width={compact ? 300 : 220}
+        height={compact ? 48 : 38}
         priority
-        className="h-auto max-w-[190px] object-contain md:max-w-[220px]"
+        className={imageClass}
       />
       {!compact ? (
         <div className="hidden border-l border-line pl-3 sm:block">

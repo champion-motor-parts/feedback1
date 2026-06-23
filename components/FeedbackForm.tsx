@@ -217,11 +217,14 @@ export function FeedbackForm({
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f7f5] px-4 py-5">
+    <main className="min-h-screen bg-[#f8f7f5] px-3 py-5 sm:px-4">
       <div className="mx-auto max-w-xl">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <Brand compact />
-          <div className="flex rounded-md border border-line bg-white p-1 shadow-sm" aria-label="Language">
+        <div className="mb-5 flex flex-col gap-3">
+          <div className="flex justify-center">
+            <Brand compact />
+          </div>
+          <div className="flex justify-end">
+            <div className="flex rounded-md border border-line bg-white p-1 shadow-sm" aria-label="Language">
             {(["en", "ms"] as const).map((code) => (
               <button
                 key={code}
@@ -235,6 +238,7 @@ export function FeedbackForm({
                 {code === "en" ? "EN" : "BM"}
               </button>
             ))}
+            </div>
           </div>
         </div>
 
@@ -321,7 +325,7 @@ export function FeedbackForm({
               <Field label={t.staff}>
                 <input type="hidden" name="staffId" value={staffId} />
                 {filteredStaff.length ? (
-                  <div className="grid gap-3">
+                  <div className="grid gap-4">
                     {filteredStaff.map((person) => {
                       const isSelected = person.id === staffId;
                       return (
@@ -331,25 +335,27 @@ export function FeedbackForm({
                           aria-pressed={isSelected}
                           title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
                           onClick={() => setStaffId(person.id)}
-                          className={`focus-ring flex min-h-32 items-center gap-4 rounded-lg border bg-white p-3 text-left transition ${
+                          className={`focus-ring flex flex-col overflow-hidden rounded-lg border bg-white p-3 text-center transition ${
                             isSelected
                               ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                               : "border-line hover:border-neutral-300"
                           }`}
                         >
                           {person.image_url ? (
-                            <img
-                              src={person.image_url}
-                              alt={person.name}
-                              className="h-24 w-24 shrink-0 rounded-lg border border-line bg-neutral-50 object-cover"
-                            />
+                            <span className="flex h-56 w-full items-center justify-center overflow-hidden rounded-md border border-line bg-neutral-50 p-2 sm:h-64">
+                              <img
+                                src={person.image_url}
+                                alt={person.name}
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            </span>
                           ) : (
-                            <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 text-xl font-black text-brand-700">
+                            <span className="flex h-56 w-full items-center justify-center rounded-md border border-brand-100 bg-brand-50 text-4xl font-black text-brand-700 sm:h-64">
                               {initials(person.name)}
                             </span>
                           )}
-                          <span className="min-w-0 flex-1">
-                            <span className="block break-words text-sm font-black leading-5 text-ink">
+                          <span className="mt-3 block w-full min-w-0">
+                            <span className="block break-words text-base font-black leading-6 text-ink">
                               {person.name}
                             </span>
                             <span className="mt-2 inline-flex rounded-md bg-brand-50 px-2 py-1 text-xs font-black text-brand-700">
