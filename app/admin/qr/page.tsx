@@ -19,8 +19,8 @@ const adminLinks: ShellLink[] = [
 export default async function QRPage() {
   const user = await requireUser("admin");
   const [staff, branches] = await Promise.all([
-    prisma.user.findMany({ where: { role: "staff" }, include: { branch: true }, orderBy: { id: "asc" } }),
-    prisma.branch.findMany({ orderBy: { id: "asc" } })
+    prisma.user.findMany({ where: { role: "staff", status: "Active" }, include: { branch: true }, orderBy: { id: "asc" } }),
+    prisma.branch.findMany({ where: { status: "Active" }, orderBy: { id: "asc" } })
   ]);
 
   return (

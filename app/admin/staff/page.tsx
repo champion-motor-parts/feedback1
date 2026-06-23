@@ -24,11 +24,11 @@ export default async function StaffManagementPage() {
   const user = await requireUser("admin");
   const [staff, branches] = await Promise.all([
     prisma.user.findMany({
-      where: { role: "staff" },
+      where: { role: "staff", status: "Active" },
       include: { branch: true },
       orderBy: { id: "asc" }
     }),
-    prisma.branch.findMany({ orderBy: { id: "asc" } })
+    prisma.branch.findMany({ where: { status: "Active" }, orderBy: { id: "asc" } })
   ]);
 
   return (

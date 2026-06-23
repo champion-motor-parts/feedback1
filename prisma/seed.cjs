@@ -234,6 +234,30 @@ async function ensureBaseData() {
   return { admin, branches: Object.values(branchesByKey), staff };
 }
 
+async function deleteInactiveLegacyData() {
+  const inactiveStaff = await prisma.user.findMany({
+    where: { role: "staff", status: "Inactive" },
+    select: { id: true }
+  });
+  const inactiveStaffIds = inactiveStaff.map((person) => person.id);
+
+  if (inactiveStaffIds.length) {
+    await prisma.qRCode.deleteMany({ where: { staff_id: { in: inactiveStaffIds } } });
+    await prisma.user.deleteMany({ where: { id: { in: inactiveStaffIds } } });
+  }
+
+  const inactiveBranches = await prisma.branch.findMany({
+    where: { status: "Inactive" },
+    select: { id: true }
+  });
+  const inactiveBranchIds = inactiveBranches.map((branch) => branch.id);
+
+  if (inactiveBranchIds.length) {
+    await prisma.qRCode.deleteMany({ where: { branch_id: { in: inactiveBranchIds } } });
+    await prisma.branch.deleteMany({ where: { id: { in: inactiveBranchIds } } });
+  }
+}
+
 async function createDemoFeedbacks({ admin, branches, staff }) {
   for (let i = 1; i <= 84; i += 1) {
     const person = staff[(i - 1) % staff.length];
@@ -312,6 +336,10 @@ async function main() {
   }
 
   const baseData = await ensureBaseData();
+
+  if (clearFeedbackData || resetDemoData) {
+    await deleteInactiveLegacyData();
+  }
 
   if (seedDemoData) {
     await createDemoFeedbacks(baseData);

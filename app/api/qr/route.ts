@@ -20,12 +20,12 @@ export async function GET(request: Request) {
   let qrUrl = "";
   let fileName = "feedback-qr.png";
   if (type === "staff") {
-    const staff = await prisma.user.findFirst({ where: { id, role: "staff" } });
+    const staff = await prisma.user.findFirst({ where: { id, role: "staff", status: "Active" } });
     if (!staff) return NextResponse.json({ error: "Staff not found." }, { status: 404 });
     qrUrl = feedbackLink({ staffId: staff.id });
     fileName = `${staff.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-feedback-qr.png`;
   } else {
-    const branch = await prisma.branch.findUnique({ where: { id } });
+    const branch = await prisma.branch.findFirst({ where: { id, status: "Active" } });
     if (!branch) return NextResponse.json({ error: "Branch not found." }, { status: 404 });
     qrUrl = feedbackLink({ branchId: branch.id });
     fileName = `${branch.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-feedback-qr.png`;

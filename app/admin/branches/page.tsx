@@ -23,6 +23,7 @@ const adminLinks: ShellLink[] = [
 export default async function BranchManagementPage() {
   const user = await requireUser("admin");
   const branches = await prisma.branch.findMany({
+    where: { status: "Active" },
     orderBy: { id: "asc" }
   });
 

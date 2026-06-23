@@ -20,7 +20,7 @@ export default async function StaffDataPage() {
   const user = await requireUser("admin");
   const [staff, feedbacks] = await Promise.all([
     prisma.user.findMany({
-      where: { role: "staff" },
+      where: { role: "staff", status: "Active" },
       include: { branch: true },
       orderBy: { id: "asc" }
     }),
