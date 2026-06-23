@@ -41,8 +41,8 @@ export default async function AdminFeedbackPage({
       include: { branch: true, staff: true, images: true },
       orderBy: { created_at: "desc" }
     }),
-    prisma.branch.findMany({ orderBy: { id: "asc" } }),
-    prisma.user.findMany({ where: { role: "staff" }, orderBy: { id: "asc" } })
+    prisma.branch.findMany({ where: { status: "Active" }, orderBy: { id: "asc" } }),
+    prisma.user.findMany({ where: { role: "staff", status: "Active" }, orderBy: { id: "asc" } })
   ]);
 
   const query = new URLSearchParams();

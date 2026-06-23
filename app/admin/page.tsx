@@ -44,8 +44,8 @@ export default async function AdminDashboardPage() {
       include: { branch: true, staff: true, images: true },
       orderBy: { created_at: "desc" }
     }),
-    prisma.branch.findMany({ orderBy: { id: "asc" } }),
-    prisma.user.findMany({ where: { role: "staff" }, orderBy: { id: "asc" } })
+    prisma.branch.findMany({ where: { status: "Active" }, orderBy: { id: "asc" } }),
+    prisma.user.findMany({ where: { role: "staff", status: "Active" }, orderBy: { id: "asc" } })
   ]);
 
   const totalComplaints = feedbacks.filter((feedback) =>
@@ -75,15 +75,15 @@ export default async function AdminDashboardPage() {
     value: feedbacks.filter((feedback) => (feedback.target_type || "staff") === target).length
   }));
   const byStaff = staff.map((person) => ({
-    name: person.name,
+    name: person.staff_code || person.name,
     value: feedbacks.filter((feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id).length
   }));
   const averageByStaff = staff.map((person) => {
     const own = feedbacks.filter((feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id);
-    return { name: person.name, value: average(own.map((feedback) => feedback.rating)) };
+    return { name: person.staff_code || person.name, value: average(own.map((feedback) => feedback.rating)) };
   });
   const complaintsByStaff = staff.map((person) => ({
-    name: person.name,
+    name: person.staff_code || person.name,
     value: feedbacks.filter(
       (feedback) =>
         feedback.target_type === "staff" &&
@@ -92,7 +92,7 @@ export default async function AdminDashboardPage() {
     ).length
   }));
   const complimentsByStaff = staff.map((person) => ({
-    name: person.name,
+    name: person.staff_code || person.name,
     value: feedbacks.filter(
       (feedback) => feedback.target_type === "staff" && feedback.staff_id === person.id && feedback.feedback_type === "Compliment"
     ).length
