@@ -26,7 +26,7 @@ const copy = {
     repair: "Repair",
     counter: "Counter",
     staff: "Staff / Service Person",
-    counterSlot: "Counter Slot",
+    counterSlot: "Counter Person",
     assignedBranch: "Assigned branch",
     feedbackType: "Feedback Type",
     rating: "Rating",
@@ -58,7 +58,7 @@ const copy = {
     repair: "Repair",
     counter: "Kaunter",
     staff: "Staf / Orang Servis",
-    counterSlot: "Slot Kaunter",
+    counterSlot: "Staf Kaunter",
     assignedBranch: "Cawangan",
     feedbackType: "Jenis Maklum Balas",
     rating: "Penilaian",
@@ -108,17 +108,16 @@ const ratingLabels: Record<Language, Record<number, string>> = {
 };
 
 function initials(name: string) {
-  return name
+  const parts = name
     .split(/\s+/)
     .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
+    .slice(0, 2);
+
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return parts.map((part) => part[0]).join("").toUpperCase();
 }
 
 function counterLabel(slot: string, language: Language) {
-  if (language === "ms") return slot.replace("Counter", "Kaunter");
   return slot;
 }
 
@@ -300,7 +299,7 @@ export function FeedbackForm({
             {isCounter ? (
               <Field label={t.counterSlot}>
                 <input type="hidden" name="targetLabel" value={counterSlot} />
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid gap-3">
                   {COUNTER_SLOTS.map((slot) => {
                     const isSelected = counterSlot === slot;
                     return (
@@ -309,13 +308,27 @@ export function FeedbackForm({
                         type="button"
                         aria-pressed={isSelected}
                         onClick={() => setCounterSlot(slot)}
-                        className={`focus-ring min-h-16 rounded-md border px-2 text-center text-xs font-bold transition ${
+                        className={`focus-ring relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
                           isSelected
-                            ? "border-brand-600 bg-brand-50 text-brand-700 shadow-soft"
-                            : "border-line bg-white text-neutral-600 hover:border-neutral-300"
+                            ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
+                            : "border-line hover:border-neutral-300"
                         }`}
                       >
-                        {counterLabel(slot, language)}
+                        <span className="flex h-[104px] w-[104px] items-center justify-center rounded-md bg-brand-50 text-xl font-black text-brand-700 sm:aspect-square sm:h-auto sm:w-full sm:text-2xl">
+                          {initials(slot)}
+                        </span>
+                        <span className="pointer-events-none absolute inset-y-0 left-[112px] w-12 -translate-x-5 bg-gradient-to-r from-transparent via-brand-50/80 to-white sm:left-[38%] sm:w-14 sm:-translate-x-6" />
+                        <span className="relative z-10 flex min-w-0 flex-col justify-center px-2 py-1.5 pl-4 sm:px-3 sm:py-2 sm:pl-5">
+                          <span className="block break-words text-sm font-black leading-5 text-ink">
+                            {counterLabel(slot, language)}
+                          </span>
+                          <span className="mt-1.5 inline-flex w-fit rounded-md bg-brand-50 px-2 py-0.5 text-[10px] font-black text-brand-700 sm:mt-2 sm:py-1 sm:text-[11px]">
+                            {t.counter.toUpperCase()}
+                          </span>
+                          <span className="mt-1 block text-[10px] font-semibold leading-3 text-neutral-500 sm:text-xs sm:leading-4">
+                            {t.counter}
+                          </span>
+                        </span>
                       </button>
                     );
                   })}

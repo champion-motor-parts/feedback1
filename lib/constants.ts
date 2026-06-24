@@ -36,7 +36,7 @@ export const FEEDBACK_SERVICE_AREA_LABELS: Record<(typeof FEEDBACK_SERVICE_AREAS
   counter: "Counter"
 };
 
-export const COUNTER_SLOTS = ["Counter 1", "Counter 2", "Counter 3"] as const;
+export const COUNTER_SLOTS = ["apek", "pendek", "acu"] as const;
 
 export const COMPLAINT_TYPES = [
   "Product Issue",
