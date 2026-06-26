@@ -186,6 +186,7 @@ export function FeedbackForm({
             label: person.name,
             code: person.staff_code || "",
             position: person.position || t.counter,
+            imageUrl: person.image_url || "",
             staffId: person.id
           }))
         : counterSlots.map((slot) => ({
@@ -193,6 +194,7 @@ export function FeedbackForm({
             label: slot,
             code: "",
             position: t.counter,
+            imageUrl: "",
             staffId: 0
           })),
     [counterSlots, counterStaff, t.counter]
@@ -360,9 +362,19 @@ export function FeedbackForm({
                             : "border-line hover:border-neutral-300"
                         }`}
                       >
-                        <span className="flex h-[104px] w-[104px] items-center justify-center rounded-md bg-brand-50 text-xl font-black text-brand-700 sm:aspect-square sm:h-auto sm:w-full sm:text-2xl">
-                          {initials(option.label)}
-                        </span>
+                        {option.imageUrl ? (
+                          <span className="h-[104px] w-[104px] overflow-hidden rounded-md bg-neutral-50 sm:aspect-square sm:h-auto sm:w-full">
+                            <img
+                              src={option.imageUrl}
+                              alt={option.label}
+                              className="h-full w-full object-cover"
+                            />
+                          </span>
+                        ) : (
+                          <span className="flex h-[104px] w-[104px] items-center justify-center rounded-md bg-brand-50 text-xl font-black text-brand-700 sm:aspect-square sm:h-auto sm:w-full sm:text-2xl">
+                            {initials(option.label)}
+                          </span>
+                        )}
                         <span className="pointer-events-none absolute inset-y-0 left-[112px] w-12 -translate-x-5 bg-gradient-to-r from-transparent via-brand-50/80 to-white sm:left-[38%] sm:w-14 sm:-translate-x-6" />
                         <span className="relative z-10 flex min-w-0 flex-col justify-center px-2 py-1.5 pl-4 sm:px-3 sm:py-2 sm:pl-5">
                           <span className="block break-words text-sm font-black leading-5 text-ink">
