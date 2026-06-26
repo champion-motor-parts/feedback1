@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   await requireUser("admin");
-  const [staff, feedbacks] = await Promise.all([
+  const [staff, feedbacks, branches] = await Promise.all([
     prisma.user.findMany({
       where: { role: "staff", status: "Active" },
       include: { branch: true },
@@ -17,9 +17,13 @@ export async function GET() {
     }),
     prisma.feedback.findMany({
       include: { staff: true, branch: true, images: true }
+    }),
+    prisma.branch.findMany({
+      where: { status: "Active" },
+      orderBy: { id: "asc" }
     })
   ]);
-  const summary = staffRawSummary(staff, feedbacks);
+  const summary = staffRawSummary(staff, feedbacks, branches);
 
   const headers = [
     "Staff Name",

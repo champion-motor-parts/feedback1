@@ -7,7 +7,7 @@ import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { COUNTER_SLOTS, FEEDBACK_SERVICE_AREAS, FEEDBACK_TYPES, RATING_LABELS } from "@/lib/constants";
+import { counterSlotsForBranchName, FEEDBACK_SERVICE_AREAS, FEEDBACK_TYPES, RATING_LABELS } from "@/lib/constants";
 import { malaysiaPhoneIsValid } from "@/lib/utils";
 
 type StaffOption = User & { branch: Branch | null };
@@ -137,13 +137,18 @@ export function FeedbackForm({
   initialServiceArea?: ServiceArea;
 }) {
   const initialStaff = staff.find((person) => person.id === initialStaffId);
+  const initialBranchValue = initialBranchId || initialStaff?.branch_id || branches[0]?.id || 0;
+  const initialBranch = branches.find((branch) => branch.id === initialBranchValue);
+  const initialCounterSlots = counterSlotsForBranchName(initialBranch?.name);
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [serviceArea, setServiceArea] = useState<ServiceArea>(
     (initialStaff?.service_area as ServiceArea | null) || initialServiceArea
   );
-  const [counterSlot, setCounterSlot] = useState<(typeof COUNTER_SLOTS)[number]>(COUNTER_SLOTS[0]);
+  const [counterSlot, setCounterSlot] = useState(
+    initialStaff?.service_area === "counter" ? initialStaff.name : initialCounterSlots[0] || ""
+  );
   const [rating, setRating] = useState(5);
-  const [branchId, setBranchId] = useState(initialBranchId || initialStaff?.branch_id || branches[0]?.id || 0);
+  const [branchId, setBranchId] = useState(initialBranchValue);
   const [staffId, setStaffId] = useState(initialStaffId || staff[0]?.id || 0);
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
@@ -159,15 +164,51 @@ export function FeedbackForm({
     () => staff.find((person) => person.id === staffId),
     [staff, staffId]
   );
-
+  const selectedBranch = useMemo(
+    () => branches.find((branch) => branch.id === branchId),
+    [branches, branchId]
+  );
   const t = copy[language];
   const ratingText = ratingLabels[language];
+  const counterSlots = useMemo(
+    () => counterSlotsForBranchName(selectedBranch?.name),
+    [selectedBranch?.name]
+  );
+  const counterStaff = useMemo(
+    () => staff.filter((person) => person.branch_id === branchId && person.service_area === "counter"),
+    [branchId, staff]
+  );
+  const counterOptions = useMemo(
+    () =>
+      counterStaff.length
+        ? counterStaff.map((person) => ({
+            key: String(person.id),
+            label: person.name,
+            code: person.staff_code || "",
+            position: person.position || t.counter,
+            staffId: person.id
+          }))
+        : counterSlots.map((slot) => ({
+            key: slot,
+            label: slot,
+            code: "",
+            position: t.counter,
+            staffId: 0
+          })),
+    [counterSlots, counterStaff, t.counter]
+  );
 
   useEffect(() => {
     if (!isCounter && !filteredStaff.some((person) => person.id === staffId)) {
       setStaffId(filteredStaff[0]?.id || 0);
     }
   }, [filteredStaff, isCounter, staffId]);
+
+  useEffect(() => {
+    if (isCounter && !counterOptions.some((option) => option.label === counterSlot)) {
+      setCounterSlot(counterOptions[0]?.label || "");
+    }
+  }, [counterOptions, counterSlot, isCounter]);
 
   async function submitFeedback(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -183,8 +224,13 @@ export function FeedbackForm({
     formData.set("serviceArea", serviceArea);
 
     if (isCounter) {
-      formData.delete("staffId");
       formData.delete("photos");
+      const selectedCounter = counterOptions.find((option) => option.label === counterSlot);
+      if (selectedCounter?.staffId) {
+        formData.set("staffId", String(selectedCounter.staffId));
+      } else {
+        formData.delete("staffId");
+      }
       formData.set("targetLabel", counterSlot);
     }
 
@@ -300,14 +346,14 @@ export function FeedbackForm({
               <Field label={t.counterSlot}>
                 <input type="hidden" name="targetLabel" value={counterSlot} />
                 <div className="grid gap-3">
-                  {COUNTER_SLOTS.map((slot) => {
-                    const isSelected = counterSlot === slot;
+                  {counterOptions.map((option) => {
+                    const isSelected = counterSlot === option.label;
                     return (
                       <button
-                        key={slot}
+                        key={option.key}
                         type="button"
                         aria-pressed={isSelected}
-                        onClick={() => setCounterSlot(slot)}
+                        onClick={() => setCounterSlot(option.label)}
                         className={`focus-ring relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
                           isSelected
                             ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
@@ -315,18 +361,18 @@ export function FeedbackForm({
                         }`}
                       >
                         <span className="flex h-[104px] w-[104px] items-center justify-center rounded-md bg-brand-50 text-xl font-black text-brand-700 sm:aspect-square sm:h-auto sm:w-full sm:text-2xl">
-                          {initials(slot)}
+                          {initials(option.label)}
                         </span>
                         <span className="pointer-events-none absolute inset-y-0 left-[112px] w-12 -translate-x-5 bg-gradient-to-r from-transparent via-brand-50/80 to-white sm:left-[38%] sm:w-14 sm:-translate-x-6" />
                         <span className="relative z-10 flex min-w-0 flex-col justify-center px-2 py-1.5 pl-4 sm:px-3 sm:py-2 sm:pl-5">
                           <span className="block break-words text-sm font-black leading-5 text-ink">
-                            {counterLabel(slot, language)}
+                            {counterLabel(option.label, language)}
                           </span>
                           <span className="mt-1.5 inline-flex w-fit rounded-md bg-brand-50 px-2 py-0.5 text-[10px] font-black text-brand-700 sm:mt-2 sm:py-1 sm:text-[11px]">
-                            {t.counter.toUpperCase()}
+                            {option.code || t.counter.toUpperCase()}
                           </span>
                           <span className="mt-1 block text-[10px] font-semibold leading-3 text-neutral-500 sm:text-xs sm:leading-4">
-                            {t.counter}
+                            {option.position}
                           </span>
                         </span>
                       </button>

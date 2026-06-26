@@ -18,7 +18,7 @@ const adminLinks: ShellLink[] = [
 
 export default async function StaffDataPage() {
   const user = await requireUser("admin");
-  const [staff, feedbacks] = await Promise.all([
+  const [staff, feedbacks, branches] = await Promise.all([
     prisma.user.findMany({
       where: { role: "staff", status: "Active" },
       include: { branch: true },
@@ -26,9 +26,13 @@ export default async function StaffDataPage() {
     }),
     prisma.feedback.findMany({
       include: { staff: true, branch: true, images: true }
+    }),
+    prisma.branch.findMany({
+      where: { status: "Active" },
+      orderBy: { id: "asc" }
     })
   ]);
-  const rows = staffRawSummary(staff, feedbacks);
+  const rows = staffRawSummary(staff, feedbacks, branches);
 
   return (
     <Shell title="Staff Data" subtitle="Raw counts and distribution data for boss review." userName={user.name} links={adminLinks}>

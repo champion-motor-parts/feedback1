@@ -20,8 +20,20 @@ const adminLinks: ShellLink[] = [
   { href: "/admin/qr", label: "QR Codes", icon: Camera }
 ];
 
-export default async function StaffManagementPage() {
+const errorMessages: Record<string, string> = {
+  missing: "Please fill in staff name, email, and branch.",
+  email: "This email is already used by another account.",
+  status: "Invalid staff status.",
+  area: "Invalid staff area."
+};
+
+export default async function StaffManagementPage({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const user = await requireUser("admin");
+  const params = await searchParams;
   const [staff, branches] = await Promise.all([
     prisma.user.findMany({
       where: { role: "staff", status: "Active" },
@@ -38,6 +50,11 @@ export default async function StaffManagementPage() {
           <CardTitle>Add Staff</CardTitle>
         </CardHeader>
         <CardContent>
+          {params.error ? (
+            <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
+              {errorMessages[params.error] || "Unable to save staff. Please check the details and try again."}
+            </div>
+          ) : null}
           <form action={saveStaffAction} className="grid gap-3 md:grid-cols-2 xl:grid-cols-8">
             <Input name="name" placeholder="Staff Name" required />
             <Input name="email" type="email" placeholder="Email" required />

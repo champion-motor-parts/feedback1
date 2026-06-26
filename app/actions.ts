@@ -22,6 +22,28 @@ function safeRedirect(path: string, fallback: string) {
   redirect(path.startsWith("/") ? path : fallback);
 }
 
+async function ensureStaffQRCode(staffId: number) {
+  const data = {
+    type: "staff",
+    staff_id: staffId,
+    branch_id: null,
+    qr_url: feedbackLink({ staffId })
+  };
+  const existing = await prisma.qRCode.findFirst({
+    where: {
+      type: "staff",
+      staff_id: staffId
+    }
+  });
+
+  if (existing) {
+    await prisma.qRCode.update({ where: { id: existing.id }, data });
+    return;
+  }
+
+  await prisma.qRCode.create({ data });
+}
+
 export async function loginAction(formData: FormData) {
   const role = text(formData, "role") as "admin" | "staff";
   const email = text(formData, "email").toLowerCase();
@@ -109,11 +131,17 @@ export async function saveStaffAction(formData: FormData) {
   const branchId = numberValue(formData, "branchId");
   const password = text(formData, "password");
 
-  if (!name || !email || !branchId) throw new Error("Staff name, email, and branch are required");
-  if (!STAFF_STATUS.includes(status as (typeof STAFF_STATUS)[number])) throw new Error("Invalid staff status");
-  if (!FEEDBACK_SERVICE_AREAS.includes(serviceArea as (typeof FEEDBACK_SERVICE_AREAS)[number])) throw new Error("Invalid staff area");
+  if (!name || !email || !branchId) redirect("/admin/staff?error=missing");
+  if (!STAFF_STATUS.includes(status as (typeof STAFF_STATUS)[number])) redirect("/admin/staff?error=status");
+  if (!FEEDBACK_SERVICE_AREAS.includes(serviceArea as (typeof FEEDBACK_SERVICE_AREAS)[number])) redirect("/admin/staff?error=area");
+
+  const existingByEmail = await prisma.user.findUnique({ where: { email } });
+  if (id && existingByEmail && existingByEmail.id !== id) redirect("/admin/staff?error=email");
+  if (!id && existingByEmail && existingByEmail.role !== "staff") redirect("/admin/staff?error=email");
 
   if (id) {
+    const existing = await prisma.user.findUnique({ where: { id } });
+    if (!existing || existing.role !== "staff") redirect("/admin/staff?error=missing");
     const data: {
       name: string;
       email: string;
@@ -132,35 +160,31 @@ export async function saveStaffAction(formData: FormData) {
       position,
       staff_code: staffCode,
       service_area: serviceArea,
-      image_url: imageUrl || null,
+      image_url: imageUrl || existing.image_url || null,
       status,
       branch_id: branchId
     };
     if (password) data.password_hash = await bcrypt.hash(password, 10);
-    await prisma.user.update({ where: { id }, data });
+    const staff = await prisma.user.update({ where: { id }, data });
+    await ensureStaffQRCode(staff.id);
   } else {
-    const staff = await prisma.user.create({
-      data: {
-        name,
-        email,
-        phone,
-        position,
-        staff_code: staffCode,
-        service_area: serviceArea,
-        image_url: imageUrl || null,
-        status,
-        role: "staff",
-        branch_id: branchId,
-        password_hash: await bcrypt.hash(password || "Staff123!", 10)
-      }
-    });
-    await prisma.qRCode.create({
-      data: {
-        type: "staff",
-        staff_id: staff.id,
-        qr_url: feedbackLink({ staffId: staff.id })
-      }
-    });
+    const data = {
+      name,
+      email,
+      phone,
+      position,
+      staff_code: staffCode,
+      service_area: serviceArea,
+      image_url: imageUrl || existingByEmail?.image_url || null,
+      status,
+      role: "staff",
+      branch_id: branchId,
+      password_hash: password ? await bcrypt.hash(password, 10) : existingByEmail?.password_hash || await bcrypt.hash("Staff123!", 10)
+    };
+    const staff = existingByEmail
+      ? await prisma.user.update({ where: { id: existingByEmail.id }, data })
+      : await prisma.user.create({ data });
+    await ensureStaffQRCode(staff.id);
   }
 
   revalidatePath("/admin/staff");

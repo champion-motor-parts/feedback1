@@ -36,7 +36,18 @@ export const FEEDBACK_SERVICE_AREA_LABELS: Record<(typeof FEEDBACK_SERVICE_AREAS
   counter: "Counter"
 };
 
-export const COUNTER_SLOTS = ["apek", "pendek", "acu"] as const;
+export const COUNTER_SLOTS = ["apek", "pendek", "acu", "Ayang"] as const;
+
+const KEMPAS_COUNTER_SLOTS = ["apek", "pendek", "acu"] as const;
+const MASAI_COUNTER_SLOTS = ["Ayang"] as const;
+
+export function counterSlotsForBranchName(branchName?: string | null): readonly string[] {
+  if ((branchName || "").toLowerCase().includes("masai")) {
+    return MASAI_COUNTER_SLOTS;
+  }
+
+  return KEMPAS_COUNTER_SLOTS;
+}
 
 export const COMPLAINT_TYPES = [
   "Product Issue",

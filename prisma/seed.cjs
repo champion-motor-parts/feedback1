@@ -60,7 +60,7 @@ const branchSeed = [
 ];
 
 const staffSeed = [
-  { branchKey: "hq", area: "repair", code: "KH-R01", position: "Repair / Foreman", name: "MOHAMMAD FADLI BIN MOHD RODZI (PADID)" },
+  { branchKey: "hq", area: "repair", code: "KH-R01", position: "Repair / Foreman", name: "MOHAMMAD FADLI BIN MOHD RODZI (PADIL)" },
   { branchKey: "hq", area: "repair", code: "KH-R02", position: "Repair / Foreman", name: "MOHD SHAIFUL HISHAM BIN RAMLI (ISAM)" },
   { branchKey: "hq", area: "repair", code: "KH-R03", position: "Repair / Foreman", name: "MUHAMMAD FARIDUDIN BIN ROSLAN (ALONG)" },
   { branchKey: "hq", area: "repair", code: "KH-R04", position: "Repair / Foreman", name: "MOHD RAIHAN BIN TAIB (WATA)" },
@@ -82,6 +82,9 @@ const staffSeed = [
   { branchKey: "hq", area: "showroom", code: "KH-S04", position: "Showroom Sales", name: "MOHAMAD HAIRIE FARIZ BIN ABDUL MAJID (HAIRIE)" },
   { branchKey: "hq", area: "showroom", code: "KH-S05", position: "Showroom Sales", name: "MUHAMMAD ADHA DANISH BIN MOHD NATTA (ADHA)" },
   { branchKey: "hq", area: "showroom", code: "KH-S06", position: "Showroom Sales", name: "PRINTS KINI RAIKKONEN (KIMI)" },
+  { branchKey: "hq", area: "counter", code: "KH-C01", position: "Counter", name: "APEK" },
+  { branchKey: "hq", area: "counter", code: "KH-C02", position: "Counter", name: "PENDEK" },
+  { branchKey: "hq", area: "counter", code: "KH-C03", position: "Counter", name: "ACU" },
   { branchKey: "masai", area: "showroom", code: "MS-S01", position: "Showroom Sales", name: "NURUL NASUHA ROSLAN" },
   { branchKey: "masai", area: "showroom", code: "MS-S02", position: "Showroom Sales", name: "MUHAMMAD SHAHRUL RAHAIZAT BIN ROSLI" },
   { branchKey: "masai", area: "showroom", code: "MS-S03", position: "Showroom Sales", name: "MUHAMMAD AIDIL HAIRIE BIN MOHD FAIZUL" },
@@ -89,8 +92,32 @@ const staffSeed = [
   { branchKey: "masai", area: "repair", code: "MS-R01", position: "Repair / Pomen", name: "MUHAMAD KHAIRULLAH BIN MAHASSAN" },
   { branchKey: "masai", area: "repair", code: "MS-R02", position: "Repair / Pomen", name: "MUHAMMAD FAIZAL BIN ABU BAKAR" },
   { branchKey: "masai", area: "repair", code: "MS-R03", position: "Repair / Pomen", name: "MUHAMAD RAFIE BIN CHAMIYAN" },
-  { branchKey: "masai", area: "repair", code: "MS-R04", position: "Repair / Pomen", name: "RIDZUAN SYAAH BIN ABDUR RAHMAN" }
+  { branchKey: "masai", area: "repair", code: "MS-R04", position: "Repair / Pomen", name: "RIDZUAN SYAAH BIN ABDUR RAHMAN" },
+  { branchKey: "masai", area: "counter", code: "MS-C01", position: "Counter", name: "AYANG" }
 ];
+
+const staffPhotoByCode = {
+  "KH-R01": "https://lh3.googleusercontent.com/d/1KFyL4QhaH0cxYGo9f6SjYpBGqnNj2qYb",
+  "KH-R02": "https://lh3.googleusercontent.com/d/1nYhHGEKPp43W3pmOaHQ4sZdhol-qFqza",
+  "KH-R03": "https://lh3.googleusercontent.com/d/1-c-m7uiwlKhoDhc-6mxpsu6p8ZV1bZE7",
+  "KH-R04": "https://lh3.googleusercontent.com/d/1IBjD2qvpjzuCmCHBtz95uxXHTWS0pSA8",
+  "KH-R05": "https://lh3.googleusercontent.com/d/1lKYlaWUM6EqVxO9AFZ6TmDRjvRtdg7wI",
+  "KH-R06": "https://lh3.googleusercontent.com/d/11mIP7HwC5LGUgZEV7CjSqbjevLg3tXUZ",
+  "KH-R08": "https://lh3.googleusercontent.com/d/11mU_plIfXeMfZ85aoV65dQswpbT8iPIU",
+  "KH-R09": "https://lh3.googleusercontent.com/d/1nPTdgEH_s3PFaDeS_1ON3Xuu2oj7dsG_",
+  "KH-R10": "https://lh3.googleusercontent.com/d/1mYQUswbGLzAfxmFoDgOc6-kdM0N5Ijg0",
+  "KH-R11": "https://lh3.googleusercontent.com/d/1wgCskq3b6tIO_FHnGXNknEGGAq-dCgDZ",
+  "KH-R12": "https://lh3.googleusercontent.com/d/1Djxd9OImBfsyAqgxhy0-SCuc0f1PUqR1",
+  "KH-R13": "https://lh3.googleusercontent.com/d/1p7ZQo6l0QZrXKemqmeQSxFjOUJfuMUgg",
+  "KH-R14": "https://lh3.googleusercontent.com/d/1MVnPwOLyFycAE_-t3rqamWNJaFbuLISy",
+  "KH-R15": "https://lh3.googleusercontent.com/d/1Y3A2rA76VIEa9FMvRc_CZZ18dC1IiiqR",
+  "KH-R16": "https://lh3.googleusercontent.com/d/1P3s62Ge6zCD-aZoAGgavu1lnmmVZ-XTk",
+  "KH-S02": "https://lh3.googleusercontent.com/d/10JS92UZ7CsZROWrnWEbyWtafee1b-Yyr",
+  "KH-S03": "https://lh3.googleusercontent.com/d/1tRgEVqky08Tx-6H5ZhAFm9XjDS55ApSe",
+  "KH-S04": "https://lh3.googleusercontent.com/d/1-fknFIDwd5fY_5_tIukKGGvefFgFEweV",
+  "KH-S05": "https://lh3.googleusercontent.com/d/1LV6jzn--0GqIP4-hCShDACWMBskSstkK",
+  "KH-S06": "https://lh3.googleusercontent.com/d/1ndeRPzjP8NKkxhI9NkPHcuqJpF2FlgO0"
+};
 
 function daysAgo(days) {
   const date = new Date();
@@ -181,6 +208,8 @@ async function ensureBaseData() {
   for (const [index, seed] of staffSeed.entries()) {
     const email = staffEmail(seed, index);
     const branch = branchesByKey[seed.branchKey];
+    const seedImageUrl = staffPhotoByCode[seed.code] || null;
+    const existing = await prisma.user.findUnique({ where: { email } });
     const data = {
       name: seed.name,
       role: "staff",
@@ -189,10 +218,9 @@ async function ensureBaseData() {
       position: seed.position,
       staff_code: seed.code,
       service_area: seed.area,
-      image_url: null,
+      image_url: existing?.image_url || seedImageUrl,
       status: "Active"
     };
-    const existing = await prisma.user.findUnique({ where: { email } });
     const person = existing
       ? await prisma.user.update({ where: { email }, data })
       : await prisma.user.create({
@@ -210,7 +238,10 @@ async function ensureBaseData() {
   await prisma.user.updateMany({
     where: {
       role: "staff",
-      email: { notIn: activeStaffEmails }
+      OR: [
+        { branch_id: { notIn: activeBranchIds } },
+        { name: { in: ["Akak", "Suha", "Nana", "YY"] } }
+      ]
     },
     data: { status: "Inactive" }
   });
