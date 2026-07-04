@@ -451,7 +451,7 @@ export function FeedbackForm({
             )}
 
             <Field label={t.feedbackType}>
-              <Select name="feedbackType" required>
+              <Select name="feedbackType" required defaultValue="General Feedback">
                 {FEEDBACK_TYPES.map((type) => (
                   <option key={type} value={type}>
                     {feedbackTypeLabels[language][type]}

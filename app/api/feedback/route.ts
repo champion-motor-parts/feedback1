@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const staffId = Number(formData.get("staffId"));
   const serviceArea = String(formData.get("serviceArea") || "showroom");
   const counterSlot = String(formData.get("targetLabel") || "");
-  const feedbackType = String(formData.get("feedbackType") || "");
+  const feedbackType = String(formData.get("feedbackType") || "General Feedback");
   const rating = Number(formData.get("rating"));
   const comment = String(formData.get("comment") || "").trim();
   const customerName = String(formData.get("customerName") || "").trim();
