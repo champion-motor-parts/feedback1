@@ -10,7 +10,7 @@ export default async function AdminLoginPage({
     <LoginPanel
       role="admin"
       title="Admin Login"
-      subtitle="View all feedback, charts, raw staff data, QR links, and exports."
+      subtitle="View all complaints, customer records, charts, raw staff data, QR links, and exports."
       defaultEmail="admin@championmotor.test"
       defaultPassword="Admin123!"
       hasError={params.error === "invalid"}

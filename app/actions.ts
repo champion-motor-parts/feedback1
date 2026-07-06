@@ -88,7 +88,7 @@ export async function updateCaseAction(formData: FormData) {
   }
 
   const feedback = await prisma.feedback.findUnique({ where: { id: feedbackId } });
-  if (!feedback) throw new Error("Feedback not found");
+  if (!feedback) throw new Error("Complaint not found");
   if (user.role === "staff" && feedback.staff_id !== user.id) {
     throw new Error("You can only update your own cases");
   }

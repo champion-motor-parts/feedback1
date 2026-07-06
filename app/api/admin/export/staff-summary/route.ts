@@ -30,7 +30,7 @@ export async function GET() {
     "Staff Code",
     "Area",
     "Branch",
-    "Total Feedback",
+    "Total Complaints",
     "Average Rating",
     "Rating 1 Count",
     "Rating 2 Count",

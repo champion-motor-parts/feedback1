@@ -1,4 +1,4 @@
-import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter } from "lucide-react";
+import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Users } from "lucide-react";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { buttonClass } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,8 @@ import { feedbackServiceAreaName } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -38,7 +39,7 @@ export default async function StaffDataPage() {
     <Shell title="Staff Data" subtitle="Raw counts and distribution data for boss review." userName={user.name} links={adminLinks}>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-3xl text-sm leading-6 text-neutral-600">
-          This page shows objective counts only: total feedback, average rating, rating distribution, feedback type counts, and case status counts.
+          This page shows objective counts only: total complaints, average rating, rating distribution, complaint type counts, and case status counts.
         </p>
         <a href="/api/admin/export/staff-summary" className={buttonClass({ variant: "secondary" })}>
           <Download className="h-4 w-4" />
@@ -60,7 +61,7 @@ export default async function StaffDataPage() {
                     "Staff Code",
                     "Area",
                     "Branch",
-                    "Total Feedback",
+                    "Total Complaints",
                     "Average Rating",
                     "1 Star Count",
                     "2 Star Count",

@@ -1,4 +1,4 @@
-import { BarChart3, Ban, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Save, UserPlus } from "lucide-react";
+import { BarChart3, Ban, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Save, UserPlus, Users } from "lucide-react";
 import { deactivateStaffAction, saveStaffAction } from "@/app/actions";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { Shell, type ShellLink } from "@/components/Shell";
@@ -13,7 +13,8 @@ import { feedbackLink, formatDate } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -44,7 +45,7 @@ export default async function StaffManagementPage({
   ]);
 
   return (
-    <Shell title="Staff Management" subtitle="Maintain staff records and staff QR feedback links." userName={user.name} links={adminLinks}>
+    <Shell title="Staff Management" subtitle="Maintain staff records and staff QR complaint links." userName={user.name} links={adminLinks}>
       <Card>
         <CardHeader>
           <CardTitle>Add Staff</CardTitle>

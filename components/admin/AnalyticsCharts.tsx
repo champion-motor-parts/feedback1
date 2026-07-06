@@ -58,7 +58,7 @@ export function AnalyticsCharts({
 }) {
   return (
     <div className="grid gap-5 xl:grid-cols-2">
-      <ChartFrame title="Feedback by Type">
+      <ChartFrame title="Complaints by Type">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie data={byType} dataKey="value" nameKey="name" innerRadius={56} outerRadius={92} paddingAngle={2}>
@@ -71,19 +71,19 @@ export function AnalyticsCharts({
         </ResponsiveContainer>
       </ChartFrame>
 
-      <ChartFrame title="Feedback by Branch">
+      <ChartFrame title="Complaints by Branch">
         <SimpleBarChart data={byBranch} color="#121212" />
       </ChartFrame>
 
-      <ChartFrame title="Feedback by Area">
+      <ChartFrame title="Complaints by Area">
         <SimpleBarChart data={byArea} color="#0f766e" />
       </ChartFrame>
 
-      <ChartFrame title="Feedback by Target">
+      <ChartFrame title="Complaints by Target">
         <SimpleBarChart data={byTarget} color="#b95520" />
       </ChartFrame>
 
-      <ChartFrame title="Feedback by Staff">
+      <ChartFrame title="Complaints by Staff">
         <SimpleBarChart data={byStaff} color="#c8102e" />
       </ChartFrame>
 
@@ -112,7 +112,7 @@ export function AnalyticsCharts({
         </ResponsiveContainer>
       </ChartFrame>
 
-      <ChartFrame title="Daily Feedback Trend">
+      <ChartFrame title="Daily Complaint Trend">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={dailyTrend} margin={{ left: 0, right: 12, top: 8, bottom: 8 }}>
             <CartesianGrid stroke="#e6e8ec" vertical={false} />

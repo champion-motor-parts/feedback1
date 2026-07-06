@@ -7,7 +7,7 @@ import { buttonClass } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatDate, ratingStars } from "@/lib/utils";
+import { complaintTypeName, formatDate, ratingStars } from "@/lib/utils";
 
 const staffLinks: ShellLink[] = [
   { href: "/staff", label: "My Cases", icon: ClipboardList }
@@ -29,7 +29,7 @@ export default async function StaffDashboardPage() {
   return (
     <Shell title="Staff Dashboard" subtitle="Customer cases assigned to your account." userName={user.name} links={staffLinks}>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <MetricCard label="Total Feedback" value={feedbacks.length} icon={Inbox} />
+        <MetricCard label="Total Complaints" value={feedbacks.length} icon={Inbox} />
         <MetricCard label="New Cases" value={newCases} icon={Clock3} />
         <MetricCard label="In Progress Cases" value={inProgress} icon={Wrench} />
         <MetricCard label="Resolved Cases" value={resolved} icon={ListChecks} />
@@ -48,7 +48,7 @@ export default async function StaffDashboardPage() {
                   <th className="py-3 pr-4">Case ID</th>
                   <th className="py-3 pr-4">Customer Name</th>
                   <th className="py-3 pr-4">Customer Phone</th>
-                  <th className="py-3 pr-4">Feedback Type</th>
+                  <th className="py-3 pr-4">Complaint Type</th>
                   <th className="py-3 pr-4">Rating</th>
                   <th className="py-3 pr-4">Comment Preview</th>
                   <th className="py-3 pr-4">Status</th>
@@ -62,7 +62,7 @@ export default async function StaffDashboardPage() {
                     <td className="py-3 pr-4 font-semibold">{feedback.case_id}</td>
                     <td className="py-3 pr-4">{feedback.customer_name || "-"}</td>
                     <td className="py-3 pr-4">{feedback.customer_phone}</td>
-                    <td className="py-3 pr-4">{feedback.feedback_type}</td>
+                    <td className="py-3 pr-4">{complaintTypeName(feedback.feedback_type)}</td>
                     <td className="py-3 pr-4">{ratingStars(feedback.rating)}</td>
                     <td className="max-w-xs truncate py-3 pr-4">{feedback.comment}</td>
                     <td className="py-3 pr-4"><StatusBadge status={feedback.status} /></td>

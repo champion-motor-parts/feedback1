@@ -17,9 +17,9 @@ type ServiceArea = (typeof FEEDBACK_SERVICE_AREAS)[number];
 const copy = {
   en: {
     qrForm: "QR Form",
-    eyebrow: "Champion Motor Customer Feedback",
+    eyebrow: "Champion Motor Customer Complaint",
     title: "Tell us what happened.",
-    intro: "Your feedback helps us improve our service.",
+    intro: "We hear you. Your complaint helps us improve our service.",
     branch: "Branch / Outlet",
     area: "Complaint Area",
     showroom: "Showroom",
@@ -28,7 +28,7 @@ const copy = {
     staff: "Staff / Service Person",
     counterSlot: "Counter Person",
     assignedBranch: "Assigned branch",
-    feedbackType: "Feedback Type",
+    feedbackType: "Complaint Type",
     rating: "Rating",
     comment: "Comment / Details",
     commentPlaceholder: "Please describe what happened or tell us how we can improve.",
@@ -36,22 +36,23 @@ const copy = {
     uploadHint: "Optional. Up to 3 images, 3 MB each.",
     uploadCta: "Add product, installation, or warranty photos",
     customerName: "Customer Name",
+    birthday: "Birthday",
     optional: "Optional",
     phoneNumber: "Phone Number",
     phonePlaceholder: "01xxxxxxxx or +601xxxxxxxx",
     phoneError: "Please enter a valid Malaysia phone number, e.g. 01xxxxxxxx or +601xxxxxxxx.",
     photoError: "Please upload up to 3 photos only.",
     noStaff: "No active staff found for this area.",
-    submitError: "Unable to submit feedback. Please try again.",
+    submitError: "Unable to submit complaint. Please try again.",
     networkError: "Network error. Please try again.",
-    submit: "Submit Feedback",
+    submit: "Submit Complaint",
     staffFallback: "Staff"
   },
   ms: {
     qrForm: "Borang QR",
-    eyebrow: "Maklum Balas Pelanggan Champion Motor",
+    eyebrow: "Aduan Pelanggan Champion Motor",
     title: "Kongsi pengalaman anda.",
-    intro: "Maklum balas anda membantu kami memperbaiki servis.",
+    intro: "Kami mendengar aduan anda dan akan memperbaiki servis kami.",
     branch: "Cawangan / Outlet",
     area: "Bahagian Aduan",
     showroom: "Showroom",
@@ -60,7 +61,7 @@ const copy = {
     staff: "Staf / Orang Servis",
     counterSlot: "Staf Kaunter",
     assignedBranch: "Cawangan",
-    feedbackType: "Jenis Maklum Balas",
+    feedbackType: "Jenis Aduan",
     rating: "Penilaian",
     comment: "Komen / Butiran",
     commentPlaceholder: "Sila terangkan apa yang berlaku atau bagaimana kami boleh membantu.",
@@ -68,21 +69,25 @@ const copy = {
     uploadHint: "Tidak wajib. Maksimum 3 gambar, 3 MB setiap satu.",
     uploadCta: "Tambah gambar produk, pemasangan, atau warranty",
     customerName: "Nama Pelanggan",
+    birthday: "Tarikh Lahir",
     optional: "Tidak wajib",
     phoneNumber: "Nombor Telefon",
     phonePlaceholder: "01xxxxxxxx atau +601xxxxxxxx",
     phoneError: "Sila masukkan nombor telefon Malaysia yang sah, contoh 01xxxxxxxx atau +601xxxxxxxx.",
     photoError: "Sila muat naik maksimum 3 gambar sahaja.",
     noStaff: "Tiada staf aktif untuk bahagian ini.",
-    submitError: "Maklum balas tidak dapat dihantar. Sila cuba lagi.",
+    submitError: "Aduan tidak dapat dihantar. Sila cuba lagi.",
     networkError: "Masalah rangkaian. Sila cuba lagi.",
-    submit: "Hantar Maklum Balas",
+    submit: "Hantar Aduan",
     staffFallback: "Staf"
   }
 } satisfies Record<Language, Record<string, string>>;
 
 const feedbackTypeLabels: Record<Language, Record<string, string>> = {
-  en: Object.fromEntries(FEEDBACK_TYPES.map((type) => [type, type])),
+  en: {
+    ...Object.fromEntries(FEEDBACK_TYPES.map((type) => [type, type])),
+    "General Feedback": "General Complaint"
+  },
   ms: {
     "Product Issue": "Isu Produk",
     "Installation Issue": "Isu Pemasangan",
@@ -91,7 +96,7 @@ const feedbackTypeLabels: Record<Language, Record<string, string>> = {
     "Wrong Item": "Barang Salah",
     "Warranty / Claim": "Warranty / Tuntutan",
     Compliment: "Pujian",
-    "General Feedback": "Maklum Balas Umum",
+    "General Feedback": "Aduan Umum",
     Other: "Lain-lain"
   }
 };
@@ -502,6 +507,10 @@ export function FeedbackForm({
 
             <Field label={t.customerName}>
               <Input name="customerName" placeholder={t.optional} />
+            </Field>
+
+            <Field label={t.birthday}>
+              <Input name="customerBirthDate" type="date" />
             </Field>
 
             <Field label={t.phoneNumber}>

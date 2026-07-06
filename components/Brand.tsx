@@ -17,7 +17,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       />
       {!compact ? (
         <div className="hidden border-l border-line pl-3 sm:block">
-          <p className="text-sm font-bold uppercase tracking-wide text-ink">Feedback System</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-ink">Complaint System</p>
           <p className="text-xs text-neutral-500">Customer Service</p>
         </div>
       ) : null}

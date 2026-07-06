@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter } from "lucide-react";
+import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Users } from "lucide-react";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { StatusBadge } from "@/components/StatusBadge";
 import { buttonClass } from "@/components/ui/button";
@@ -16,11 +16,12 @@ import {
 import { feedbackWhereFromSearch } from "@/lib/filters";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { feedbackServiceAreaName, feedbackTargetName, formatDate, ratingStars } from "@/lib/utils";
+import { complaintTypeName, feedbackServiceAreaName, feedbackTargetName, formatDate, ratingStars } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -52,7 +53,7 @@ export default async function AdminFeedbackPage({
   const queryString = query.toString();
 
   return (
-    <Shell title="Feedback Management" subtitle="Filter, review, update, and export customer feedback." userName={user.name} links={adminLinks}>
+    <Shell title="Complaint Management" subtitle="Filter, review, update, and export customer complaints." userName={user.name} links={adminLinks}>
       <Card>
         <CardHeader>
           <CardTitle>Filters</CardTitle>
@@ -73,7 +74,7 @@ export default async function AdminFeedbackPage({
                 <option key={person.id} value={person.id}>{person.name}</option>
               ))}
             </Select>
-            <Select name="target" defaultValue={params.target || ""} aria-label="Feedback target">
+            <Select name="target" defaultValue={params.target || ""} aria-label="Complaint target">
               <option value="">All Targets</option>
               {FEEDBACK_TARGET_TYPES.map((target) => (
                 <option key={target} value={target}>{FEEDBACK_TARGET_LABELS[target]}</option>
@@ -85,10 +86,10 @@ export default async function AdminFeedbackPage({
                 <option key={area} value={area}>{FEEDBACK_SERVICE_AREA_LABELS[area]}</option>
               ))}
             </Select>
-            <Select name="type" defaultValue={params.type || ""} aria-label="Feedback type">
+            <Select name="type" defaultValue={params.type || ""} aria-label="Complaint type">
               <option value="">All Types</option>
               {FEEDBACK_TYPES.map((type) => (
-                <option key={type} value={type}>{type}</option>
+                <option key={type} value={type}>{complaintTypeName(type)}</option>
               ))}
             </Select>
             <Select name="rating" defaultValue={params.rating || ""} aria-label="Rating">
@@ -120,20 +121,21 @@ export default async function AdminFeedbackPage({
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>All Feedback ({feedbacks.length})</CardTitle>
+          <CardTitle>All Complaints ({feedbacks.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="table-scroll">
-            <table className="w-full min-w-[1120px] text-left text-sm">
+            <table className="w-full min-w-[1240px] text-left text-sm">
               <thead className="border-b border-line text-xs uppercase tracking-wide text-neutral-500">
                 <tr>
                   <th className="py-3 pr-4">Case ID</th>
                   <th className="py-3 pr-4">Customer Name</th>
                   <th className="py-3 pr-4">Phone Number</th>
+                  <th className="py-3 pr-4">Birthday</th>
                   <th className="py-3 pr-4">Branch</th>
                   <th className="py-3 pr-4">Area</th>
                   <th className="py-3 pr-4">Target</th>
-                  <th className="py-3 pr-4">Feedback Type</th>
+                  <th className="py-3 pr-4">Complaint Type</th>
                   <th className="py-3 pr-4">Rating</th>
                   <th className="py-3 pr-4">Status</th>
                   <th className="py-3 pr-4">Created Date</th>
@@ -146,10 +148,11 @@ export default async function AdminFeedbackPage({
                     <td className="py-3 pr-4 font-semibold">{feedback.case_id}</td>
                     <td className="py-3 pr-4">{feedback.customer_name || "-"}</td>
                     <td className="py-3 pr-4">{feedback.customer_phone}</td>
+                    <td className="py-3 pr-4">{formatDate(feedback.customer_birth_date)}</td>
                     <td className="py-3 pr-4">{feedback.branch.name}</td>
                     <td className="py-3 pr-4">{feedbackServiceAreaName(feedback.service_area)}</td>
                     <td className="py-3 pr-4">{feedbackTargetName(feedback)}</td>
-                    <td className="py-3 pr-4">{feedback.feedback_type}</td>
+                    <td className="py-3 pr-4">{complaintTypeName(feedback.feedback_type)}</td>
                     <td className="py-3 pr-4">{ratingStars(feedback.rating)}</td>
                     <td className="py-3 pr-4"><StatusBadge status={feedback.status} /></td>
                     <td className="py-3 pr-4">{formatDate(feedback.created_at)}</td>

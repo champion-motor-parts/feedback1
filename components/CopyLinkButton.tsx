@@ -12,7 +12,7 @@ export function CopyLinkButton({ value }: { value: string }) {
       type="button"
       variant="secondary"
       size="sm"
-      title="Copy feedback link"
+      title="Copy complaint link"
       onClick={async () => {
         await navigator.clipboard.writeText(value);
         setCopied(true);

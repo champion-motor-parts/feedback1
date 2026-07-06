@@ -59,6 +59,12 @@ export function feedbackServiceAreaName(area: string | null | undefined) {
   return "-";
 }
 
+export function complaintTypeName(type: string | null | undefined) {
+  if (!type) return "-";
+  if (type === "General Feedback") return "General Complaint";
+  return type;
+}
+
 export function malaysiaPhoneIsValid(phone: string) {
   const compact = phone.replace(/[\s-]/g, "");
   return /^(01\d{8,9}|\+601\d{8,9})$/.test(compact);

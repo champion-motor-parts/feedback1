@@ -53,6 +53,7 @@ model Feedback {
   service_area   String?
   customer_name  String?
   customer_phone String
+  customer_birth_date DateTime?
   feedback_type  String
   rating         Int
   comment        String

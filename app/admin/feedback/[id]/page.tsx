@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { BarChart3, Camera, ClipboardList, Gauge, LineChart, ListFilter } from "lucide-react";
+import { BarChart3, Camera, ClipboardList, Gauge, LineChart, ListFilter, Users } from "lucide-react";
 import { updateCaseAction } from "@/app/actions";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { PriorityBadge, StatusBadge } from "@/components/StatusBadge";
@@ -9,11 +9,12 @@ import { Field, Select, Textarea } from "@/components/ui/field";
 import { CASE_STATUSES } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { feedbackServiceAreaName, feedbackTargetName, formatDateTime, ratingStars } from "@/lib/utils";
+import { complaintTypeName, feedbackServiceAreaName, feedbackTargetName, formatDate, formatDateTime, ratingStars } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -43,16 +44,17 @@ export default async function AdminFeedbackDetailPage({
       <div className="grid gap-5 xl:grid-cols-[1fr_380px]">
         <Card>
           <CardHeader>
-            <CardTitle>Feedback Detail</CardTitle>
+            <CardTitle>Complaint Detail</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <Detail label="Customer Name" value={feedback.customer_name || "-"} />
               <Detail label="Phone Number" value={feedback.customer_phone} />
+              <Detail label="Birthday" value={formatDate(feedback.customer_birth_date)} />
               <Detail label="Branch" value={feedback.branch.name} />
               <Detail label="Complaint Area" value={feedbackServiceAreaName(feedback.service_area)} />
-              <Detail label="Feedback Target" value={feedbackTargetName(feedback)} />
-              <Detail label="Feedback Type" value={feedback.feedback_type} />
+              <Detail label="Complaint Target" value={feedbackTargetName(feedback)} />
+              <Detail label="Complaint Type" value={complaintTypeName(feedback.feedback_type)} />
               <Detail label="Rating" value={ratingStars(feedback.rating)} />
               <Detail label="Created Date" value={formatDateTime(feedback.created_at)} />
               <Detail label="Updated Date" value={formatDateTime(feedback.updated_at)} />
@@ -75,7 +77,7 @@ export default async function AdminFeedbackDetailPage({
                 <div className="mt-3 grid gap-3 sm:grid-cols-3">
                   {feedback.images.map((image) => (
                     <a key={image.id} href={image.image_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-md border border-line">
-                      <img src={image.image_url} alt="Uploaded feedback" className="h-36 w-full object-cover" />
+                      <img src={image.image_url} alt="Uploaded complaint" className="h-36 w-full object-cover" />
                     </a>
                   ))}
                 </div>

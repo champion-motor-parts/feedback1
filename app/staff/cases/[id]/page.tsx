@@ -9,7 +9,7 @@ import { Field, Select, Textarea } from "@/components/ui/field";
 import { CASE_STATUSES } from "@/lib/constants";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { feedbackServiceAreaName, formatDateTime, ratingStars } from "@/lib/utils";
+import { complaintTypeName, feedbackServiceAreaName, formatDate, formatDateTime, ratingStars } from "@/lib/utils";
 
 const staffLinks: ShellLink[] = [
   { href: "/staff", label: "My Cases", icon: ClipboardList }
@@ -45,10 +45,11 @@ export default async function StaffCaseDetailPage({
             <div className="grid gap-4 md:grid-cols-2">
               <Detail label="Customer Name" value={feedback.customer_name || "-"} />
               <Detail label="Phone Number" value={feedback.customer_phone} />
+              <Detail label="Birthday" value={formatDate(feedback.customer_birth_date)} />
               <Detail label="Branch" value={feedback.branch.name} />
               <Detail label="Complaint Area" value={feedbackServiceAreaName(feedback.service_area)} />
               <Detail label="Staff Name" value={feedback.staff?.name || user.name} />
-              <Detail label="Feedback Type" value={feedback.feedback_type} />
+              <Detail label="Complaint Type" value={complaintTypeName(feedback.feedback_type)} />
               <Detail label="Rating" value={ratingStars(feedback.rating)} />
               <Detail label="Created Date" value={formatDateTime(feedback.created_at)} />
               <div>
@@ -69,7 +70,7 @@ export default async function StaffCaseDetailPage({
                 <div className="mt-3 grid gap-3 sm:grid-cols-3">
                   {feedback.images.map((image) => (
                     <a key={image.id} href={image.image_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-md border border-line">
-                      <img src={image.image_url} alt="Uploaded feedback" className="h-36 w-full object-cover" />
+                      <img src={image.image_url} alt="Uploaded complaint" className="h-36 w-full object-cover" />
                     </a>
                   ))}
                 </div>

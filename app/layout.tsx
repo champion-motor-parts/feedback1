@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Champion Motor Feedback",
-  description: "QR feedback and service data collection MVP"
+  title: "Champion Motor Complaint",
+  description: "QR complaint and customer service data collection MVP"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

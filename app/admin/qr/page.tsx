@@ -1,4 +1,4 @@
-import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter } from "lucide-react";
+import { BarChart3, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Users } from "lucide-react";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { buttonClass } from "@/components/ui/button";
@@ -9,7 +9,8 @@ import { feedbackLink } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -24,7 +25,7 @@ export default async function QRPage() {
   ]);
 
   return (
-    <Shell title="QR Codes" subtitle="Generate and download feedback QR codes." userName={user.name} links={adminLinks}>
+    <Shell title="QR Codes" subtitle="Generate and download complaint QR codes." userName={user.name} links={adminLinks}>
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
           <CardHeader>

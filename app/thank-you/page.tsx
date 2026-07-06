@@ -14,18 +14,18 @@ export default async function ThankYouPage({
   const language = params.lang === "ms" ? "ms" : "en";
   const copy = {
     en: {
-      title: "Thank you for your feedback.",
-      body: "Our team will review your case soon.",
+      title: "Thank you. We received your complaint.",
+      body: "Our team hears you and will review your case soon.",
       caseId: "Case ID",
       whatsapp: "Contact Us on WhatsApp",
-      another: "Submit Another Feedback"
+      another: "Submit Another Complaint"
     },
     ms: {
-      title: "Terima kasih atas maklum balas anda.",
+      title: "Terima kasih. Aduan anda telah diterima.",
       body: "Pasukan kami akan menyemak kes anda secepat mungkin.",
       caseId: "Nombor Kes",
       whatsapp: "Hubungi Kami di WhatsApp",
-      another: "Hantar Maklum Balas Lain"
+      another: "Hantar Aduan Lain"
     }
   }[language];
   const whatsappUrl = process.env.COMPANY_WHATSAPP_URL || "https://wa.me/601116177703";

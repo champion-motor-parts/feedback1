@@ -18,19 +18,24 @@ export async function POST(request: Request) {
   const rating = Number(formData.get("rating"));
   const comment = String(formData.get("comment") || "").trim();
   const customerName = String(formData.get("customerName") || "").trim();
+  const customerBirthDateValue = String(formData.get("customerBirthDate") || "").trim();
   const customerPhone = String(formData.get("customerPhone") || "").trim();
+  const customerBirthDate = customerBirthDateValue ? new Date(`${customerBirthDateValue}T00:00:00.000Z`) : null;
 
   if (!FEEDBACK_SERVICE_AREAS.includes(serviceArea as (typeof FEEDBACK_SERVICE_AREAS)[number])) {
-    return NextResponse.json({ error: "Invalid feedback area." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid complaint area." }, { status: 400 });
   }
   if (!branchId || !feedbackType || !rating || !comment || !customerPhone || (serviceArea !== "counter" && !staffId)) {
     return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
   }
   if (!FEEDBACK_TYPES.includes(feedbackType as (typeof FEEDBACK_TYPES)[number])) {
-    return NextResponse.json({ error: "Invalid feedback type." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid complaint type." }, { status: 400 });
   }
   if (rating < 1 || rating > 5) {
     return NextResponse.json({ error: "Rating must be between 1 and 5." }, { status: 400 });
+  }
+  if (customerBirthDateValue && Number.isNaN(customerBirthDate?.getTime())) {
+    return NextResponse.json({ error: "Invalid birthday." }, { status: 400 });
   }
   if (!malaysiaPhoneIsValid(customerPhone)) {
     return NextResponse.json({ error: "Invalid Malaysia phone number." }, { status: 400 });
@@ -113,6 +118,7 @@ export async function POST(request: Request) {
       target_label: targetLabel,
       service_area: serviceArea,
       customer_name: customerName || null,
+      customer_birth_date: customerBirthDate,
       customer_phone: customerPhone,
       feedback_type: feedbackType,
       rating,

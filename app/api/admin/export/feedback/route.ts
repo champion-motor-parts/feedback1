@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { toCsv } from "@/lib/csv";
 import { feedbackWhereFromSearch } from "@/lib/filters";
 import { prisma } from "@/lib/prisma";
-import { feedbackServiceAreaName, feedbackTargetName, feedbackTargetPosition, formatDateTime } from "@/lib/utils";
+import { complaintTypeName, feedbackServiceAreaName, feedbackTargetName, feedbackTargetPosition, formatDate, formatDateTime } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -36,7 +36,8 @@ export async function GET(request: Request) {
     "Staff Position",
     "Customer Name",
     "Customer Phone",
-    "Feedback Type",
+    "Customer Birthday",
+    "Complaint Type",
     "Rating",
     "Comment",
     "Status",
@@ -57,7 +58,8 @@ export async function GET(request: Request) {
     feedbackTargetPosition(feedback),
     feedback.customer_name || "",
     feedback.customer_phone,
-    feedback.feedback_type,
+    formatDate(feedback.customer_birth_date),
+    complaintTypeName(feedback.feedback_type),
     feedback.rating,
     feedback.comment,
     feedback.status,
@@ -71,7 +73,7 @@ export async function GET(request: Request) {
   return new NextResponse(toCsv(headers, rows), {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="feedback-export.csv"`
+      "Content-Disposition": `attachment; filename="complaint-export.csv"`
     }
   });
 }

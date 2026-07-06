@@ -9,7 +9,8 @@ import {
   Inbox,
   LineChart,
   ListFilter,
-  MessageSquareWarning
+  MessageSquareWarning,
+  Users
 } from "lucide-react";
 import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
 import { MetricCard } from "@/components/MetricCard";
@@ -27,10 +28,12 @@ import {
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { average } from "@/lib/stats";
+import { complaintTypeName } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -53,13 +56,13 @@ export default async function AdminDashboardPage() {
   ).length;
   const totalCompliments = feedbacks.filter((feedback) => feedback.feedback_type === "Compliment").length;
   const thisMonth = new Date();
-  const feedbackThisMonth = feedbacks.filter((feedback) => {
+  const complaintsThisMonth = feedbacks.filter((feedback) => {
     const date = new Date(feedback.created_at);
     return date.getMonth() === thisMonth.getMonth() && date.getFullYear() === thisMonth.getFullYear();
   }).length;
 
   const byType = FEEDBACK_TYPES.map((type) => ({
-    name: type,
+    name: complaintTypeName(type),
     value: feedbacks.filter((feedback) => feedback.feedback_type === type).length
   }));
   const byBranch = branches.map((branch) => ({
@@ -114,18 +117,18 @@ export default async function AdminDashboardPage() {
   const dailyTrend = Array.from(dailyMap.entries()).map(([date, count]) => ({ date, count }));
 
   return (
-    <Shell title="Admin Dashboard" subtitle="Objective feedback overview and export-ready data." userName={user.name} links={adminLinks}>
+    <Shell title="Admin Dashboard" subtitle="Objective complaint overview and export-ready data." userName={user.name} links={adminLinks}>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <MetricCard label="Total Feedback" value={feedbacks.length} icon={Inbox} />
+        <MetricCard label="Total Complaint Records" value={feedbacks.length} icon={Inbox} />
         <MetricCard label="Average Rating Overall" value={average(feedbacks.map((feedback) => feedback.rating))} icon={BarChart3} />
-        <MetricCard label="Total Complaints" value={totalComplaints} icon={MessageSquareWarning} />
+        <MetricCard label="Complaint Cases" value={totalComplaints} icon={MessageSquareWarning} />
         <MetricCard label="Total Compliments" value={totalCompliments} icon={Heart} />
         <MetricCard label="New Cases" value={byStatus.find((item) => item.name === "New")?.value || 0} icon={ClipboardList} />
         <MetricCard label="In Progress Cases" value={byStatus.find((item) => item.name === "In Progress")?.value || 0} icon={Gauge} />
         <MetricCard label="Resolved Cases" value={byStatus.find((item) => item.name === "Resolved")?.value || 0} icon={CheckCircle2} />
         <MetricCard label="Escalated Cases" value={byStatus.find((item) => item.name === "Escalated")?.value || 0} icon={ListFilter} />
-        <MetricCard label="Feedback With Photos" value={feedbacks.filter((feedback) => feedback.images.length).length} icon={Camera} />
-        <MetricCard label="Feedback This Month" value={feedbackThisMonth} icon={LineChart} />
+        <MetricCard label="Complaints With Photos" value={feedbacks.filter((feedback) => feedback.images.length).length} icon={Camera} />
+        <MetricCard label="Complaints This Month" value={complaintsThisMonth} icon={LineChart} />
       </div>
 
       <Card className="mt-6">
@@ -134,7 +137,7 @@ export default async function AdminDashboardPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm leading-6 text-neutral-600">
-            These charts show raw counts, status distribution, and average ratings only. They do not label, score, or compare staff performance.
+            These charts show raw complaint counts, status distribution, and average ratings only. They do not label, score, or compare staff performance.
           </p>
         </CardContent>
       </Card>

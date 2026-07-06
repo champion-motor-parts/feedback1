@@ -1,4 +1,4 @@
-import { BarChart3, Ban, Building2, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Save } from "lucide-react";
+import { BarChart3, Ban, Building2, Camera, ClipboardList, Download, Gauge, LineChart, ListFilter, Save, Users } from "lucide-react";
 import { deactivateBranchAction, saveBranchAction } from "@/app/actions";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { Shell, type ShellLink } from "@/components/Shell";
@@ -13,7 +13,8 @@ import { feedbackLink, formatDate } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/feedback", label: "Feedback", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Complaints", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/staff-data", label: "Staff Data", icon: LineChart },
   { href: "/admin/staff", label: "Staff", icon: ListFilter },
   { href: "/admin/branches", label: "Branches", icon: Gauge },
@@ -28,7 +29,7 @@ export default async function BranchManagementPage() {
   });
 
   return (
-    <Shell title="Branch Management" subtitle="Maintain branch records and branch QR feedback links." userName={user.name} links={adminLinks}>
+    <Shell title="Branch Management" subtitle="Maintain branch records and branch QR complaint links." userName={user.name} links={adminLinks}>
       <Card>
         <CardHeader>
           <CardTitle>Add Branch</CardTitle>
