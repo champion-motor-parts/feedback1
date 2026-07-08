@@ -38,6 +38,7 @@ const copy = {
     customerName: "Customer Name",
     birthday: "Birthday",
     optional: "Optional",
+    requiredField: "Required",
     phoneNumber: "Phone Number",
     phonePlaceholder: "01xxxxxxxx or +601xxxxxxxx",
     phoneError: "Please enter a valid Malaysia phone number, e.g. 01xxxxxxxx or +601xxxxxxxx.",
@@ -71,6 +72,7 @@ const copy = {
     customerName: "Nama Pelanggan",
     birthday: "Tarikh Lahir",
     optional: "Tidak wajib",
+    requiredField: "Wajib",
     phoneNumber: "Nombor Telefon",
     phonePlaceholder: "01xxxxxxxx atau +601xxxxxxxx",
     phoneError: "Sila masukkan nombor telefon Malaysia yang sah, contoh 01xxxxxxxx atau +601xxxxxxxx.",
@@ -505,15 +507,15 @@ export function FeedbackForm({
               </Field>
             ) : null}
 
-            <Field label={t.customerName}>
-              <Input name="customerName" placeholder={t.optional} />
+            <Field label={`${t.customerName} *`}>
+              <Input name="customerName" required placeholder={t.requiredField} />
             </Field>
 
-            <Field label={t.birthday}>
-              <Input name="customerBirthDate" type="date" />
+            <Field label={`${t.birthday} *`}>
+              <Input name="customerBirthDate" type="date" required />
             </Field>
 
-            <Field label={t.phoneNumber}>
+            <Field label={`${t.phoneNumber} *`}>
               <Input
                 name="customerPhone"
                 required
