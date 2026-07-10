@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { malaysiaDateRange } from "@/lib/utils";
 
 export function feedbackWhereFromSearch(searchParams: Record<string, string | string[] | undefined>) {
   const branch = single(searchParams.branch);
@@ -22,8 +23,8 @@ export function feedbackWhereFromSearch(searchParams: Record<string, string | st
   if (status) where.status = status;
   if (from || to) {
     where.created_at = {};
-    if (from) where.created_at.gte = new Date(`${from}T00:00:00`);
-    if (to) where.created_at.lte = new Date(`${to}T23:59:59`);
+    if (from) where.created_at.gte = malaysiaDateRange(from);
+    if (to) where.created_at.lte = malaysiaDateRange(to, true);
   }
   if (hasPhoto === "yes") where.images = { some: {} };
   if (hasPhoto === "no") where.images = { none: {} };

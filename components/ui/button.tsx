@@ -14,7 +14,7 @@ export function buttonClass({
   className?: string;
 } = {}) {
   return cn(
-    "focus-ring inline-flex items-center justify-center gap-2 rounded-md font-semibold transition disabled:pointer-events-none disabled:opacity-50",
+    "focus-ring pressable inline-flex items-center justify-center gap-2 rounded-md font-semibold transition disabled:pointer-events-none disabled:opacity-50",
     size === "sm" && "h-9 px-3 text-sm",
     size === "md" && "h-11 px-4 text-sm",
     size === "icon" && "h-10 w-10",

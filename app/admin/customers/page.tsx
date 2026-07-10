@@ -1,11 +1,10 @@
-import { format } from "date-fns";
 import { BarChart3, Camera, ClipboardList, Gauge, LineChart, ListFilter, Users } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { Shell, type ShellLink } from "@/components/Shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { complaintTypeName, formatDate } from "@/lib/utils";
+import { complaintTypeName, formatDate, malaysiaDateParts, malaysiaDayKey } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -29,20 +28,21 @@ type CustomerRecord = {
 };
 
 function birthdayText(value: Date | null) {
-  return value ? format(value, "dd MMM yyyy") : "-";
+  return formatDate(value);
 }
 
 function nextBirthdayText(value: Date | null) {
   if (!value) return "-";
-  const today = new Date();
-  const startToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  let nextBirthday = new Date(today.getFullYear(), value.getMonth(), value.getDate());
+  const todayParts = malaysiaDateParts(new Date());
+  const birthdayParts = malaysiaDateParts(value);
+  const startToday = new Date(Date.UTC(todayParts.year, todayParts.month - 1, todayParts.day));
+  let nextBirthday = new Date(Date.UTC(todayParts.year, birthdayParts.month - 1, birthdayParts.day));
   if (nextBirthday < startToday) {
-    nextBirthday = new Date(today.getFullYear() + 1, value.getMonth(), value.getDate());
+    nextBirthday = new Date(Date.UTC(todayParts.year + 1, birthdayParts.month - 1, birthdayParts.day));
   }
   const days = Math.ceil((nextBirthday.getTime() - startToday.getTime()) / 86400000);
   if (days === 0) return "Today";
-  return `${format(nextBirthday, "dd MMM")} (${days} days)`;
+  return `${malaysiaDayKey(nextBirthday)} (${days} days)`;
 }
 
 export default async function AdminCustomersPage() {

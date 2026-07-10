@@ -1,7 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
-import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { FEEDBACK_SERVICE_AREA_LABELS, FEEDBACK_TARGET_LABELS } from "@/lib/constants";
+
+const MALAYSIA_TIME_ZONE = "Asia/Kuala_Lumpur";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,12 +10,48 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDate(value: Date | string | null | undefined) {
   if (!value) return "-";
-  return format(new Date(value), "dd MMM yyyy");
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: MALAYSIA_TIME_ZONE
+  }).format(new Date(value));
 }
 
 export function formatDateTime(value: Date | string | null | undefined) {
   if (!value) return "-";
-  return format(new Date(value), "dd MMM yyyy, HH:mm");
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: MALAYSIA_TIME_ZONE
+  }).format(new Date(value));
+}
+
+export function malaysiaDateRange(date: string, endOfDay = false) {
+  return new Date(`${date}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}+08:00`);
+}
+
+export function malaysiaDayKey(value: Date | string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    timeZone: MALAYSIA_TIME_ZONE
+  }).format(new Date(value));
+}
+
+export function malaysiaDateParts(value: Date | string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: MALAYSIA_TIME_ZONE
+  }).formatToParts(new Date(value));
+  const get = (type: string) => Number(parts.find((part) => part.type === type)?.value || 0);
+  return { year: get("year"), month: get("month"), day: get("day") };
 }
 
 export function appUrl() {

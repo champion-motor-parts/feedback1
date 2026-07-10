@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { MapPin, MessageCircle } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { CopyReviewButton } from "@/components/CopyReviewButton";
@@ -42,15 +43,57 @@ export default async function ThankYouPage({
   }[language];
   const whatsappUrl = process.env.COMPANY_WHATSAPP_URL || "https://wa.me/601116177703";
   const googleReviewUrl = "https://www.google.com/search?q=Champion+Motor+Parts+Sdn+Bhd+(HQ)&ludocid=2962366439113891171#lrd=0x31da6d80651cb9ed:0x291c7094c1ec1d63,3,,,";
+  const confetti = [
+    ["8%", "#d9792d", "7px", "13px", "2.8s", "0ms", "32px", "220deg"],
+    ["16%", "#16a34a", "8px", "8px", "3.2s", "120ms", "-24px", "310deg"],
+    ["24%", "#2563eb", "6px", "14px", "2.7s", "60ms", "42px", "260deg"],
+    ["36%", "#f59e0b", "9px", "9px", "3.4s", "180ms", "-36px", "330deg"],
+    ["48%", "#b95520", "7px", "15px", "3s", "30ms", "28px", "280deg"],
+    ["60%", "#0f766e", "8px", "8px", "3.3s", "150ms", "-44px", "300deg"],
+    ["72%", "#9333ea", "6px", "13px", "2.9s", "90ms", "34px", "240deg"],
+    ["84%", "#dc2626", "8px", "10px", "3.1s", "210ms", "-28px", "320deg"],
+    ["92%", "#475569", "6px", "12px", "2.6s", "40ms", "22px", "250deg"]
+  ];
+  const fireworks = [
+    ["18%", "22%", "#d9792d", "120ms"],
+    ["78%", "20%", "#16a34a", "220ms"],
+    ["50%", "13%", "#2563eb", "340ms"]
+  ];
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f8f7f5] px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="mb-5">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f7f5] px-4 py-8">
+      <div className="celebration-layer" aria-hidden="true">
+        {confetti.map(([x, c, w, h, d, delay, drift, r], index) => (
+          <span
+            key={`confetti-${index}`}
+            className="celebration-piece"
+            style={{
+              "--x": x,
+              "--c": c,
+              "--w": w,
+              "--h": h,
+              "--d": d,
+              "--delay": delay,
+              "--drift": drift,
+              "--r": r
+            } as CSSProperties}
+          />
+        ))}
+        {fireworks.map(([x, y, c, delay], index) => (
+          <span
+            key={`firework-${index}`}
+            className="firework"
+            style={{ "--x": x, "--y": y, "--c": c, "--delay": delay } as CSSProperties}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-md animate-enter">
+        <div className="mb-5 animate-enter">
           <Brand />
         </div>
-        <Card className="p-6 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-brand-50 text-brand-700">
+        <Card className="animate-enter-delayed p-6 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-brand-50 text-brand-700 shadow-soft">
             <MessageCircle className="h-7 w-7" />
           </div>
           <h1 className="mt-5 text-2xl font-bold text-ink">{isCompliment ? copy.complimentTitle : copy.title}</h1>

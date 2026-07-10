@@ -324,7 +324,7 @@ export function FeedbackForm({
           </div>
         </div>
 
-        <section className="mb-5 overflow-hidden rounded-lg bg-ink text-white shadow-soft">
+        <section className="mb-5 animate-enter overflow-hidden rounded-lg bg-ink text-white shadow-soft">
           <div className="border-t-4 border-brand-500 p-5">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-brand-100">{t.eyebrow}</p>
@@ -338,7 +338,7 @@ export function FeedbackForm({
         </section>
 
         {!feedbackPurpose ? (
-          <Card className="p-4 sm:p-5">
+          <Card className="animate-enter-delayed p-4 sm:p-5">
             <div className="space-y-4 text-center">
               <div>
                 <h2 className="text-xl font-black text-ink">{t.choosePurposeTitle}</h2>
@@ -348,7 +348,7 @@ export function FeedbackForm({
                 <button
                   type="button"
                   onClick={() => setFeedbackPurpose("complaint")}
-                  className="focus-ring rounded-lg border border-brand-600 bg-brand-50 p-5 text-left shadow-soft transition hover:bg-brand-100"
+                  className="focus-ring pressable rounded-lg border border-brand-600 bg-brand-50 p-5 text-left shadow-soft transition hover:bg-brand-100"
                 >
                   <MessageSquareWarning className="h-7 w-7 text-brand-700" />
                   <span className="mt-3 block text-lg font-black text-ink">{t.complaintChoice}</span>
@@ -360,7 +360,7 @@ export function FeedbackForm({
                     setFeedbackPurpose("compliment");
                     setRating(5);
                   }}
-                  className="focus-ring rounded-lg border border-emerald-600 bg-emerald-50 p-5 text-left shadow-soft transition hover:bg-emerald-100"
+                  className="focus-ring pressable rounded-lg border border-emerald-600 bg-emerald-50 p-5 text-left shadow-soft transition hover:bg-emerald-100"
                 >
                   <Smile className="h-7 w-7 text-emerald-700" />
                   <span className="mt-3 block text-lg font-black text-ink">{t.complimentChoice}</span>
@@ -370,7 +370,7 @@ export function FeedbackForm({
             </div>
           </Card>
         ) : (
-        <Card className="p-4 sm:p-5">
+        <Card className="animate-enter-delayed p-4 sm:p-5">
           <form className="space-y-5" onSubmit={submitFeedback}>
             <button
               type="button"
@@ -405,7 +405,7 @@ export function FeedbackForm({
                       type="button"
                       aria-pressed={isSelected}
                       onClick={() => setServiceArea(option.value)}
-                      className={`focus-ring flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border px-2 text-center text-xs font-bold transition ${
+                      className={`focus-ring pressable flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border px-2 text-center text-xs font-bold transition ${
                         isSelected
                           ? "border-brand-600 bg-brand-50 text-brand-700 shadow-soft"
                           : "border-line bg-white text-neutral-600 hover:border-neutral-300"
@@ -431,7 +431,7 @@ export function FeedbackForm({
                         type="button"
                         aria-pressed={isSelected}
                         onClick={() => setCounterSlot(option.label)}
-                        className={`focus-ring relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
+                        className={`focus-ring pressable relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
                           isSelected
                             ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                             : "border-line hover:border-neutral-300"
@@ -481,7 +481,7 @@ export function FeedbackForm({
                           aria-pressed={isSelected}
                           title={`${person.name} - ${person.staff_code || ""} ${person.position || "Staff"}`}
                           onClick={() => setStaffId(person.id)}
-                          className={`focus-ring relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
+                          className={`focus-ring pressable relative grid grid-cols-[104px_1fr] items-center overflow-hidden rounded-lg border bg-white p-2 text-left transition sm:grid-cols-[38%_1fr] ${
                             isSelected
                               ? "border-brand-600 shadow-soft ring-2 ring-brand-100"
                               : "border-line hover:border-neutral-300"
@@ -545,7 +545,7 @@ export function FeedbackForm({
                   <button
                     key={value}
                     type="button"
-                    className={`focus-ring flex h-14 flex-col items-center justify-center rounded-md border text-sm font-bold transition ${
+                    className={`focus-ring pressable flex h-14 flex-col items-center justify-center rounded-md border text-sm font-bold transition ${
                       rating === value
                         ? "border-brand-600 bg-brand-50 text-brand-700"
                         : "border-line bg-white text-neutral-600"

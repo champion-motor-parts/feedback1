@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import {
   BarChart3,
   Camera,
@@ -28,7 +27,7 @@ import {
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { average } from "@/lib/stats";
-import { complaintTypeName } from "@/lib/utils";
+import { complaintTypeName, malaysiaDayKey } from "@/lib/utils";
 
 const adminLinks: ShellLink[] = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -55,9 +54,9 @@ export default async function AdminDashboardPage() {
     COMPLAINT_TYPES.includes(feedback.feedback_type as (typeof COMPLAINT_TYPES)[number])
   ).length;
   const totalCompliments = feedbacks.filter((feedback) => feedback.feedback_type === "Compliment").length;
-  const thisMonth = new Date();
+  const thisMonth = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" }));
   const complaintsThisMonth = feedbacks.filter((feedback) => {
-    const date = new Date(feedback.created_at);
+    const date = new Date(new Date(feedback.created_at).toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" }));
     return date.getMonth() === thisMonth.getMonth() && date.getFullYear() === thisMonth.getFullYear();
   }).length;
 
@@ -108,10 +107,10 @@ export default async function AdminDashboardPage() {
   for (let i = 13; i >= 0; i -= 1) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    dailyMap.set(format(date, "dd MMM"), 0);
+    dailyMap.set(malaysiaDayKey(date), 0);
   }
   feedbacks.forEach((feedback) => {
-    const key = format(feedback.created_at, "dd MMM");
+    const key = malaysiaDayKey(feedback.created_at);
     if (dailyMap.has(key)) dailyMap.set(key, (dailyMap.get(key) || 0) + 1);
   });
   const dailyTrend = Array.from(dailyMap.entries()).map(([date, count]) => ({ date, count }));
