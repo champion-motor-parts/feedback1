@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Branch, User } from "@prisma/client";
-import { Camera, CreditCard, Loader2, Send, Star, Store, Wrench } from "lucide-react";
+import { Camera, CreditCard, Loader2, MessageSquareWarning, Send, Smile, Star, Store, Wrench } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import { malaysiaPhoneIsValid } from "@/lib/utils";
 type StaffOption = User & { branch: Branch | null };
 type Language = "en" | "ms";
 type ServiceArea = (typeof FEEDBACK_SERVICE_AREAS)[number];
+type FeedbackPurpose = "complaint" | "compliment";
 
 const copy = {
   en: {
@@ -20,6 +21,13 @@ const copy = {
     eyebrow: "Champion Motor Customer Complaint",
     title: "Tell us what happened.",
     intro: "We hear you. Your complaint helps us improve our service.",
+    choosePurposeTitle: "What would you like to share?",
+    choosePurposeIntro: "Choose one first so we can guide you to the right form.",
+    complaintChoice: "Complaint",
+    complaintChoiceHint: "Tell us what went wrong so our team can follow up.",
+    complimentChoice: "Compliment",
+    complimentChoiceHint: "Share a good experience with our team.",
+    backToChoice: "Change to complaint / compliment",
     branch: "Branch / Outlet",
     area: "Complaint Area",
     showroom: "Showroom",
@@ -29,9 +37,11 @@ const copy = {
     counterSlot: "Counter Person",
     assignedBranch: "Assigned branch",
     feedbackType: "Complaint Type",
+    complimentType: "Compliment Type",
     rating: "Rating",
     comment: "Comment / Details",
     commentPlaceholder: "Please describe what happened or tell us how we can improve.",
+    complimentPlaceholder: "Please tell us what went well and who helped you.",
     uploadPhoto: "Upload Photo",
     uploadHint: "Optional. Up to 3 images, 3 MB each.",
     uploadCta: "Add product, installation, or warranty photos",
@@ -47,6 +57,7 @@ const copy = {
     submitError: "Unable to submit complaint. Please try again.",
     networkError: "Network error. Please try again.",
     submit: "Submit Complaint",
+    submitCompliment: "Submit Compliment",
     staffFallback: "Staff"
   },
   ms: {
@@ -54,6 +65,13 @@ const copy = {
     eyebrow: "Aduan Pelanggan Champion Motor",
     title: "Kongsi pengalaman anda.",
     intro: "Kami mendengar aduan anda dan akan memperbaiki servis kami.",
+    choosePurposeTitle: "Apa yang anda ingin kongsi?",
+    choosePurposeIntro: "Pilih dahulu supaya borang ini sesuai dengan tujuan anda.",
+    complaintChoice: "Aduan",
+    complaintChoiceHint: "Beritahu kami masalah supaya team kami boleh follow up.",
+    complimentChoice: "Pujian",
+    complimentChoiceHint: "Kongsi pengalaman baik dengan team kami.",
+    backToChoice: "Tukar kepada aduan / pujian",
     branch: "Cawangan / Outlet",
     area: "Bahagian Aduan",
     showroom: "Showroom",
@@ -63,9 +81,11 @@ const copy = {
     counterSlot: "Staf Kaunter",
     assignedBranch: "Cawangan",
     feedbackType: "Jenis Aduan",
+    complimentType: "Jenis Pujian",
     rating: "Penilaian",
     comment: "Komen / Butiran",
     commentPlaceholder: "Sila terangkan apa yang berlaku atau bagaimana kami boleh membantu.",
+    complimentPlaceholder: "Sila kongsi pengalaman baik anda dan siapa yang membantu.",
     uploadPhoto: "Muat Naik Gambar",
     uploadHint: "Tidak wajib. Maksimum 3 gambar, 3 MB setiap satu.",
     uploadCta: "Tambah gambar produk, pemasangan, atau warranty",
@@ -81,6 +101,7 @@ const copy = {
     submitError: "Aduan tidak dapat dihantar. Sila cuba lagi.",
     networkError: "Masalah rangkaian. Sila cuba lagi.",
     submit: "Hantar Aduan",
+    submitCompliment: "Hantar Pujian",
     staffFallback: "Staf"
   }
 } satisfies Record<Language, Record<string, string>>;
@@ -148,6 +169,7 @@ export function FeedbackForm({
   const initialBranch = branches.find((branch) => branch.id === initialBranchValue);
   const initialCounterSlots = counterSlotsForBranchName(initialBranch?.name);
   const [language, setLanguage] = useState<Language>(initialLanguage);
+  const [feedbackPurpose, setFeedbackPurpose] = useState<FeedbackPurpose | null>(null);
   const [serviceArea, setServiceArea] = useState<ServiceArea>(
     (initialStaff?.service_area as ServiceArea | null) || initialServiceArea
   );
@@ -231,6 +253,7 @@ export function FeedbackForm({
     const formData = new FormData(form);
     formData.set("rating", String(rating));
     formData.set("serviceArea", serviceArea);
+    formData.set("feedbackType", feedbackPurpose === "compliment" ? "Compliment" : String(formData.get("feedbackType") || "General Feedback"));
 
     if (isCounter) {
       formData.delete("photos");
@@ -263,7 +286,12 @@ export function FeedbackForm({
         setSubmitting(false);
         return;
       }
-      window.location.href = `/thank-you?caseId=${encodeURIComponent(payload.caseId)}&lang=${language}`;
+      if (feedbackPurpose === "compliment") {
+        window.sessionStorage.setItem("champion:lastCompliment", String(formData.get("comment") || ""));
+      } else {
+        window.sessionStorage.removeItem("champion:lastCompliment");
+      }
+      window.location.href = `/thank-you?caseId=${encodeURIComponent(payload.caseId)}&lang=${language}&kind=${feedbackPurpose || "complaint"}`;
     } catch {
       setError(t.networkError);
       setSubmitting(false);
@@ -309,8 +337,48 @@ export function FeedbackForm({
           </div>
         </section>
 
+        {!feedbackPurpose ? (
+          <Card className="p-4 sm:p-5">
+            <div className="space-y-4 text-center">
+              <div>
+                <h2 className="text-xl font-black text-ink">{t.choosePurposeTitle}</h2>
+                <p className="mt-2 text-sm leading-6 text-neutral-600">{t.choosePurposeIntro}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setFeedbackPurpose("complaint")}
+                  className="focus-ring rounded-lg border border-brand-600 bg-brand-50 p-5 text-left shadow-soft transition hover:bg-brand-100"
+                >
+                  <MessageSquareWarning className="h-7 w-7 text-brand-700" />
+                  <span className="mt-3 block text-lg font-black text-ink">{t.complaintChoice}</span>
+                  <span className="mt-2 block text-sm leading-6 text-neutral-600">{t.complaintChoiceHint}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFeedbackPurpose("compliment");
+                    setRating(5);
+                  }}
+                  className="focus-ring rounded-lg border border-emerald-600 bg-emerald-50 p-5 text-left shadow-soft transition hover:bg-emerald-100"
+                >
+                  <Smile className="h-7 w-7 text-emerald-700" />
+                  <span className="mt-3 block text-lg font-black text-ink">{t.complimentChoice}</span>
+                  <span className="mt-2 block text-sm leading-6 text-neutral-600">{t.complimentChoiceHint}</span>
+                </button>
+              </div>
+            </div>
+          </Card>
+        ) : (
         <Card className="p-4 sm:p-5">
           <form className="space-y-5" onSubmit={submitFeedback}>
+            <button
+              type="button"
+              onClick={() => setFeedbackPurpose(null)}
+              className="text-xs font-bold text-brand-700 underline underline-offset-4"
+            >
+              {t.backToChoice}
+            </button>
             <Field label={t.branch}>
               <Select name="branchId" value={branchId} onChange={(event) => setBranchId(Number(event.target.value))}>
                 {branches.map((branch) => (
@@ -457,15 +525,19 @@ export function FeedbackForm({
               </Field>
             )}
 
+            {feedbackPurpose === "complaint" ? (
             <Field label={t.feedbackType}>
               <Select name="feedbackType" required defaultValue="General Feedback">
-                {FEEDBACK_TYPES.map((type) => (
+                {FEEDBACK_TYPES.filter((type) => type !== "Compliment").map((type) => (
                   <option key={type} value={type}>
                     {feedbackTypeLabels[language][type]}
                   </option>
                 ))}
               </Select>
             </Field>
+            ) : (
+              <input type="hidden" name="feedbackType" value="Compliment" />
+            )}
 
             <Field label={t.rating}>
               <div className="grid grid-cols-5 gap-2">
@@ -493,7 +565,7 @@ export function FeedbackForm({
               <Textarea
                 name="comment"
                 required
-                placeholder={t.commentPlaceholder}
+                placeholder={feedbackPurpose === "compliment" ? t.complimentPlaceholder : t.commentPlaceholder}
               />
             </Field>
 
@@ -534,10 +606,11 @@ export function FeedbackForm({
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              {t.submit}
+              {feedbackPurpose === "compliment" ? t.submitCompliment : t.submit}
             </Button>
           </form>
         </Card>
+        )}
       </div>
     </main>
   );
