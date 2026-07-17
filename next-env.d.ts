@@ -1,6 +1,23 @@
-/// <reference types="next" />
-/// <reference types="next/image-types/global" />
-import "./.next/types/routes.d.ts";
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-// NOTE: This file should not be edited
-// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("rounded-lg border border-line bg-white shadow-sm", className)}
+      {...props}
+    />
+  );
+}
+
+export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("border-b border-line p-5", className)} {...props} />;
+}
+
+export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  return <h2 className={cn("text-lg font-semibold text-ink", className)} {...props} />;
+}
+
+export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("p-5", className)} {...props} />;
+}
