@@ -291,6 +291,10 @@ export function FeedbackForm({
       } else {
         window.sessionStorage.removeItem("champion:lastCompliment");
       }
+      window.sessionStorage.setItem(
+        `champion:submissionComment:${payload.caseId}`,
+        String(formData.get("comment") || "")
+      );
       window.location.href = `/thank-you?caseId=${encodeURIComponent(payload.caseId)}&lang=${language}&kind=${feedbackPurpose || "complaint"}`;
     } catch {
       setError(t.networkError);

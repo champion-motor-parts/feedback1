@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { MapPin, MessageCircle } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { CopyReviewButton } from "@/components/CopyReviewButton";
+import { WhatsAppFollowupButton } from "@/components/WhatsAppFollowupButton";
 import { buttonClass } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -23,6 +24,7 @@ export default async function ThankYouPage({
       complimentBody: "We appreciate your kind words. You can also support our team with a Google Maps review.",
       caseId: "Case ID",
       whatsapp: "Contact Us on WhatsApp",
+      whatsappFollowup: "Send Complaint via WhatsApp",
       copyReview: "Copy My Compliment",
       copiedReview: "Copied",
       googleReview: "Leave a Google Maps Review",
@@ -35,13 +37,15 @@ export default async function ThankYouPage({
       complimentBody: "Kami amat menghargai kata-kata baik anda. Anda juga boleh menyokong team kami melalui Google Maps review.",
       caseId: "Nombor Kes",
       whatsapp: "Hubungi Kami di WhatsApp",
+      whatsappFollowup: "Hantar Aduan melalui WhatsApp",
       copyReview: "Salin Pujian Saya",
       copiedReview: "Sudah Disalin",
       googleReview: "Beri Review di Google Maps",
       another: "Hantar Aduan Lain"
     }
   }[language];
-  const whatsappUrl = process.env.COMPANY_WHATSAPP_URL || "https://wa.me/601116177703";
+  const whatsappNumber = "601121891142";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}`;
   const googleReviewUrl = "https://www.google.com/search?q=Champion+Motor+Parts+Sdn+Bhd+(HQ)&ludocid=2962366439113891171#lrd=0x31da6d80651cb9ed:0x291c7094c1ec1d63,3,,,";
   const confetti = [
     ["8%", "#d9792d", "7px", "13px", "2.8s", "0ms", "32px", "220deg"],
@@ -114,10 +118,19 @@ export default async function ThankYouPage({
                 </a>
               </>
             ) : null}
-            <a className={buttonClass()} href={whatsappUrl} target="_blank" rel="noreferrer">
-              <MessageCircle className="h-4 w-4" />
-              {copy.whatsapp}
-            </a>
+            {isCompliment ? (
+              <a className={buttonClass()} href={whatsappUrl} target="_blank" rel="noreferrer">
+                <MessageCircle className="h-4 w-4" />
+                {copy.whatsapp}
+              </a>
+            ) : (
+              <WhatsAppFollowupButton
+                caseId={caseId}
+                language={language}
+                label={copy.whatsappFollowup}
+                phoneNumber={whatsappNumber}
+              />
+            )}
             <Link href={`/feedback?lang=${language}`} className={buttonClass({ variant: "secondary" })}>
               {copy.another}
             </Link>
