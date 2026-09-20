@@ -306,7 +306,7 @@ export function FeedbackForm({
     <main className="relative min-h-screen overflow-hidden bg-transparent px-3 py-4 sm:px-4 sm:py-6">
       <div className="showroom-grid pointer-events-none fixed inset-0 opacity-40" aria-hidden="true" />
       <div className="relative mx-auto max-w-2xl">
-        <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-white p-3 shadow-soft sm:p-4">
+        <div className="mb-4 flex items-center justify-between gap-3 px-1 py-2 sm:px-2">
           <div className="min-w-0">
             <Brand compact />
           </div>
