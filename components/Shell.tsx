@@ -28,7 +28,7 @@ export function Shell({
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#080807]">
       <div className="showroom-grid pointer-events-none fixed inset-0 opacity-30" aria-hidden="true" />
-      <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-white/10 bg-[#080807] px-5 py-6 lg:block">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-white/10 bg-[#080807] px-5 py-6 lg:block">
         <div className="py-2">
           <Brand compact />
         </div>
