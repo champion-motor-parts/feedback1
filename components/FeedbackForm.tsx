@@ -303,22 +303,23 @@ export function FeedbackForm({
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f7f5] px-3 py-5 sm:px-4">
-      <div className="mx-auto max-w-xl">
-        <div className="mb-5 flex flex-col gap-3">
-          <div className="flex justify-center">
+    <main className="relative min-h-screen overflow-hidden bg-transparent px-3 py-4 sm:px-4 sm:py-6">
+      <div className="showroom-grid pointer-events-none fixed inset-0 opacity-40" aria-hidden="true" />
+      <div className="relative mx-auto max-w-2xl">
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-white p-3 shadow-soft sm:p-4">
+          <div className="min-w-0">
             <Brand compact />
           </div>
-          <div className="flex justify-end">
-            <div className="flex rounded-md border border-line bg-white p-1 shadow-sm" aria-label="Language">
+          <div className="shrink-0">
+            <div className="flex rounded-lg border border-neutral-300 bg-neutral-100 p-1" aria-label="Language">
             {(["en", "ms"] as const).map((code) => (
               <button
                 key={code}
                 type="button"
                 aria-pressed={language === code}
                 onClick={() => setLanguage(code)}
-                className={`h-8 rounded px-3 text-xs font-bold transition ${
-                  language === code ? "bg-ink text-white" : "text-neutral-600 hover:bg-neutral-100"
+                className={`h-11 min-w-11 rounded-md px-3 text-xs font-black transition ${
+                  language === code ? "bg-ink text-white shadow-sm" : "text-neutral-600 hover:bg-white"
                 }`}
               >
                 {code === "en" ? "EN" : "BM"}
@@ -328,21 +329,21 @@ export function FeedbackForm({
           </div>
         </div>
 
-        <section className="mb-5 animate-enter overflow-hidden rounded-lg bg-ink text-white shadow-soft">
-          <div className="border-t-4 border-brand-500 p-5">
+        <section className="mb-4 animate-enter overflow-hidden rounded-lg border border-white/10 bg-black/60 text-white shadow-soft backdrop-blur-sm">
+          <div className="border-l-4 border-brand-500 p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-brand-100">{t.eyebrow}</p>
               <span className="shrink-0 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
                 {t.qrForm}
               </span>
             </div>
-            <h1 className="mt-3 text-3xl font-bold leading-tight">{t.title}</h1>
+            <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">{t.title}</h1>
             <p className="mt-3 text-sm leading-6 text-neutral-200">{t.intro}</p>
           </div>
         </section>
 
         {!feedbackPurpose ? (
-          <Card className="animate-enter-delayed p-4 sm:p-5">
+          <Card className="animate-enter-delayed p-4 sm:p-6">
             <div className="space-y-4 text-center">
               <div>
                 <h2 className="text-xl font-black text-ink">{t.choosePurposeTitle}</h2>
@@ -352,7 +353,7 @@ export function FeedbackForm({
                 <button
                   type="button"
                   onClick={() => setFeedbackPurpose("complaint")}
-                  className="focus-ring pressable rounded-lg border border-brand-600 bg-brand-50 p-5 text-left shadow-soft transition hover:bg-brand-100"
+                  className="focus-ring pressable min-h-44 rounded-lg border border-brand-500 bg-brand-50 p-5 text-left shadow-sm transition hover:border-brand-600 hover:bg-brand-100"
                 >
                   <MessageSquareWarning className="h-7 w-7 text-brand-700" />
                   <span className="mt-3 block text-lg font-black text-ink">{t.complaintChoice}</span>
@@ -364,7 +365,7 @@ export function FeedbackForm({
                     setFeedbackPurpose("compliment");
                     setRating(5);
                   }}
-                  className="focus-ring pressable rounded-lg border border-emerald-600 bg-emerald-50 p-5 text-left shadow-soft transition hover:bg-emerald-100"
+                  className="focus-ring pressable min-h-44 rounded-lg border border-emerald-600 bg-emerald-50 p-5 text-left shadow-sm transition hover:bg-emerald-100"
                 >
                   <Smile className="h-7 w-7 text-emerald-700" />
                   <span className="mt-3 block text-lg font-black text-ink">{t.complimentChoice}</span>
@@ -374,7 +375,7 @@ export function FeedbackForm({
             </div>
           </Card>
         ) : (
-        <Card className="animate-enter-delayed p-4 sm:p-5">
+        <Card className="animate-enter-delayed p-4 sm:p-6">
           <form className="space-y-5" onSubmit={submitFeedback}>
             <button
               type="button"

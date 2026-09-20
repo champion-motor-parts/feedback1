@@ -80,7 +80,7 @@ export function AnalyticsCharts({
       </ChartFrame>
 
       <ChartFrame title="Complaints by Target">
-        <SimpleBarChart data={byTarget} color="#b95520" />
+        <SimpleBarChart data={byTarget} color="#f59e0b" />
       </ChartFrame>
 
       <ChartFrame title="Complaints by Staff">

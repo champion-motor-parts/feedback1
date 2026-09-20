@@ -8,7 +8,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
       <Image
-        src="/champion-logo.jpeg"
+        src="/champion-logo-transparent.png"
         alt="Champion Motor Parts Sdn Bhd"
         width={compact ? 300 : 220}
         height={compact ? 48 : 38}
@@ -17,8 +17,8 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       />
       {!compact ? (
         <div className="hidden border-l border-line pl-3 sm:block">
-          <p className="text-sm font-bold uppercase tracking-wide text-ink">Complaint System</p>
-          <p className="text-xs text-neutral-500">Customer Service</p>
+          <p className="text-sm font-black uppercase text-ink">Complaint System</p>
+          <p className="text-xs font-medium text-neutral-500">Customer Care</p>
         </div>
       ) : null}
     </div>

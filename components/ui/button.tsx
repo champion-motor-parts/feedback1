@@ -18,10 +18,10 @@ export function buttonClass({
     size === "sm" && "h-9 px-3 text-sm",
     size === "md" && "h-11 px-4 text-sm",
     size === "icon" && "h-10 w-10",
-    variant === "primary" && "bg-brand-600 text-white hover:bg-brand-700",
-    variant === "secondary" && "border border-line bg-white text-ink hover:bg-neutral-50",
+    variant === "primary" && "bg-brand-500 text-black shadow-sm hover:bg-amber-400 hover:shadow-md",
+    variant === "secondary" && "border border-neutral-300 bg-white text-ink hover:border-neutral-400 hover:bg-neutral-50",
     variant === "ghost" && "text-neutral-700 hover:bg-neutral-100",
-    variant === "danger" && "bg-ink text-white hover:bg-neutral-800",
+    variant === "danger" && "bg-ink text-white hover:bg-neutral-800 hover:shadow-md",
     className
   );
 }

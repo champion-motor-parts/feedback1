@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-lg border border-line bg-white shadow-sm", className)}
+      className={cn("rounded-lg border border-stone-300 bg-[#efeeeb] shadow-[0_16px_48px_rgba(0,0,0,0.12)]", className)}
       {...props}
     />
   );

@@ -21,12 +21,13 @@ export function LoginPanel({
   hasError: boolean;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f6f7f9] px-4 py-8">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-transparent px-4 py-8">
+      <div className="showroom-grid pointer-events-none fixed inset-0 opacity-40" aria-hidden="true" />
       <div className="w-full max-w-md">
-        <div className="mb-5">
+        <div className="relative mb-5 rounded-lg border border-white/10 bg-white p-4 shadow-soft">
           <Brand />
         </div>
-        <Card className="p-6">
+        <Card className="relative p-6">
           <h1 className="text-2xl font-bold text-ink">{title}</h1>
           <p className="mt-2 text-sm leading-6 text-neutral-600">{subtitle}</p>
 
